@@ -147,6 +147,7 @@ button.shot{padding:0;cursor:pointer}
 <div id="show"><div class="ctl"><button data-act="showPause" aria-label="pause">⏯️</button><button data-act="showSkip" aria-label="next">⏭️</button><button data-act="showMute" aria-label="music">🎵</button><button data-act="showClose" aria-label="close">✕</button></div><div id="stage"></div></div>
 <input type="file" id="fSel" accept="image/*" capture="user" hidden>
 <input type="file" id="fLib" accept="image/*" hidden>
+<input type="file" id="fPick" accept="image/*" hidden>
 <input type="file" id="fCam" accept="image/*" capture="environment" hidden>
 <input type="file" id="fHost" accept="image/*" hidden>
 <input type="file" id="fFrCam" accept="image/*" capture="environment" hidden>
@@ -2791,10 +2792,12 @@ var A={
  changePic:function(){S.target='mine';var f=$('#fLib');f.value='';f.click()},
  ask:function(d){S.ask=d.k;openModal('<h2>⚠️ '+esc(t(d.k==='all'?'eraseAll':'clearBoard'))+'</h2><p>'+esc(t(d.k==='all'?'eraseMsg':'clearBoardMsg'))+'</p><button class="btn red" data-act="doAsk">'+esc(t('yesDo'))+'</button><button class="btn alt" data-act="close">'+esc(t('cancel'))+'</button>')},
  doAsk:function(){var k=S.ask;S.ask='';if(k==='all'){D={pack:D.pack,me:'',profiles:{},imported:{},meta:{},bdays:D.bdays,seen:{}};PH={};FR={};save();savePh();saveFr();S.skip=false;S.prevMe='';S.tab='missions'}else{D.imported={};D.meta={};save()}closeModal();render();toast(t('cleared'))},
+ photoCam:function(){closeModal();var f=$('#fCam');f.value='';f.click()},
+ photoPick:function(){closeModal();var f=$('#fPick');f.value='';f.click()},
  mission:function(d){
   var m=findMission(d.id);if(!m||!me())return;
   if(m.type==='deed'){var dx=mtext(m);openModal('<h2>💜 '+esc(dx.t)+'</h2><p class="q" style="font-size:18px">'+esc(dx.d)+'</p><button class="btn" data-act="deedYes" data-id="'+m.id+'">'+esc(t('deedBtn'))+' +'+m.pts+'</button><button class="btn alt" data-act="close">'+esc(t('close'))+'</button>');return}
-  if(m.type==='photo'){S.pending=m;var f=$('#fCam');f.value='';f.click();return}
+  if(m.type==='photo'){S.pending=m;var px=mtext(m);openModal('<h2>📸 '+esc(px.t)+'</h2><p class="q" style="font-size:18px">'+esc(px.d)+'</p><button class="btn" data-act="photoCam">'+esc(t('takePic'))+'</button><button class="btn alt" data-act="photoPick">'+esc(t('pickPic'))+'</button><button class="btn alt" data-act="close">'+esc(t('close'))+'</button>');return}
   S.riddle={m:m,bad:[],hint:false,pts:function(){return Math.max(2,m.pts-3*this.bad.length-(this.hint?2:0))}};
   openModal(riddleHtml());
  },
@@ -2844,14 +2847,16 @@ $('#fHost').addEventListener('change',function(){
  var f=this.files&&this.files[0],id=S.detail;if(!f||!id)return;
  shrink(f,128,0.75,true).then(function(img){var m=D.meta[id]=D.meta[id]||{};m.photo=img;save();openModal(detailHtml());render()}).catch(function(){toast(t('photoFail'))});
 });
-$('#fCam').addEventListener('change',function(){
+function onMissionFile(){
  var f=this.files&&this.files[0],m=S.pending,p=me();if(!f||!m||!p)return;S.pending=null;toast(t('sending'));
  shrink(f,420,0.6,false).then(function(img){
   p.done[m.id]={pts:m.pts,type:'photo',ts:Date.now()};PH[D.me+'_'+m.id]=img;
   var ok=save();if(!savePh()){delete PH[D.me+'_'+m.id];toast(t('storageFull'))}else if(ok){toast(t('photoOk',{n:m.pts}));if(m.g==='bd')confetti()}
   render();
  }).catch(function(){toast(t('photoFail'))});
-});
+}
+$('#fCam').addEventListener('change',onMissionFile);
+$('#fPick').addEventListener('change',onMissionFile);
 
 /* ---------- phone-down reminders ---------- */
 var EY={sec:0,last:Date.now(),hid:0,open:false,n:0,timer:null};
