@@ -104,6 +104,27 @@ input[type=text]{width:100%;font:inherit;font-size:20px;font-weight:700;padding:
 #toast.show{transform:translate(-50%,0)}
 .muted{color:var(--mute);font-size:13px}
 .tip{font-size:13px;color:var(--mute);margin:14px 0;line-height:1.4}
+.card.deed .ic{background:#ffe3ee}
+#eyes{position:fixed;inset:0;z-index:45;display:none;background:linear-gradient(160deg,#10b5a5,#6c4cf1);color:#fff;align-items:center;justify-content:center;text-align:center;padding:24px}
+#eyes.show{display:flex}
+#show{position:fixed;inset:0;z-index:35;background:#000;display:none}
+#show.show{display:block}
+#stage{position:absolute;inset:0;overflow:hidden}
+.slide{position:absolute;inset:0;animation:sin .9s ease both}
+.slide.out{animation:sout .9s ease both}
+@keyframes sin{from{opacity:0}to{opacity:1}}
+@keyframes sout{from{opacity:1}to{opacity:0}}
+.slide .bg{position:absolute;inset:-10%;background-size:cover;background-position:center;filter:blur(28px) brightness(.55)}
+.slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;animation:kb 6s ease-out both}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.08)}}
+.slide .cap{position:absolute;left:0;right:0;bottom:calc(30px + env(safe-area-inset-bottom));text-align:center;color:#fff;font-weight:800;font-size:20px;text-shadow:0 2px 8px #000;padding:0 16px}
+.tslide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;background:linear-gradient(160deg,#6c4cf1,#ff5c8a 60%,#ffc233);padding:24px}
+.tslide h1{font-size:34px}
+.tslide .btn{max-width:260px}
+.ctl{position:absolute;top:calc(10px + env(safe-area-inset-top));right:10px;display:flex;gap:8px;z-index:2}
+.ctl button{background:rgba(0,0,0,.45);color:#fff;border-radius:50%;width:44px;height:44px;font-size:20px}
+.framebtn{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--line);border-radius:18px;padding:14px;font-weight:800;font-size:16px;margin-bottom:8px}
+button.shot{padding:0;cursor:pointer}
 .bdbanner{background:linear-gradient(90deg,#6c4cf1,#ff5c8a,#ffc233);color:#fff;font-weight:900;text-align:center;border-radius:16px;padding:12px;margin:6px 0 4px;font-size:17px;cursor:pointer}
 #card{position:fixed;inset:0;z-index:40;display:none;background:linear-gradient(160deg,#6c4cf1,#ff5c8a 60%,#ffc233);color:#fff;align-items:center;justify-content:center;text-align:center;padding:24px}
 #card.show{display:flex}
@@ -122,10 +143,15 @@ input[type=text]{width:100%;font:inherit;font-size:20px;font-weight:700;padding:
 <div id="modal"></div>
 <div id="toast"></div>
 <div id="card"></div>
+<div id="eyes"></div>
+<div id="show"><div class="ctl"><button data-act="showPause" aria-label="pause">⏯️</button><button data-act="showSkip" aria-label="next">⏭️</button><button data-act="showMute" aria-label="music">🎵</button><button data-act="showClose" aria-label="close">✕</button></div><div id="stage"></div></div>
 <input type="file" id="fSel" accept="image/*" capture="user" hidden>
 <input type="file" id="fLib" accept="image/*" hidden>
 <input type="file" id="fCam" accept="image/*" capture="environment" hidden>
 <input type="file" id="fHost" accept="image/*" hidden>
+<input type="file" id="fFrCam" accept="image/*" capture="environment" hidden>
+<input type="file" id="fFrLib" accept="image/*" hidden>
+<input type="file" id="fMus" accept="audio/*" hidden>
 <script>
 //---------------------------------------------------------------------
 //
@@ -2446,7 +2472,7 @@ var TX={
   imported:'Updated {n}: {p} pts',importSelf:'That’s a player on this phone already.',importBad:'That score code didn’t work.',
   language:'Language',hunt:'Hunt',players:'Players on this phone',newPlayer:'➕ New player',changePic:'Change my picture',resetAll:'Start a new game',resetConfirm:'Tap again: this clears ALL scores and photos',
   offline:'Works offline after the first load. Add it to your home screen for a full-screen app.',host:'Grown-up scorekeeper',hostTip:'Keep score on your phone: kids tap “My score”, you scan their code with your camera. Open this page in your browser (not a home-screen icon) so scans land in the same place.',
-  switchTo:'Tap to switch',storageFull:'Phone storage is full, so that photo wasn’t saved.',done:'Done',back:'← Back',tabHome:'Home',createPlayer:'Create a player',clearBoard:'Clear the scoreboard',eraseAll:'Erase everything (start from scratch)',clearBoardMsg:'This removes every scanned player plus any bonus or removed points. Players created on this phone keep their progress.',eraseMsg:'This deletes ALL players, scores and photos on this phone. It can’t be undone.',yesDo:'Yes, do it',cancel:'Cancel',cleared:'All clean ✨',bdSetup:'Birthday surprise',bdHint:'Grown-ups: add the birthday names for the New York hunt. Kids will find a secret Birthday group and a surprise card.',bdName1:'Birthday name',bdName2:'Second name (optional)',bdSave:'Save',bdOff:'Turn off',bdPreview:'👀 Preview the surprise card',bdGroup:'🎂 Birthday',bdCardTitle:'Happy Birthday,',bdCardSub:'New York is celebrating you! 🗽',bdFrom:'With love from the whole crew',bdStart:'Let’s party!',bdBonus:'🎂 Birthday bonus! +{n}',bdEdit:'Edit birthday names',bdAge:'Turning age (optional)',bdBannerOpt:'Show a birthday banner right away (no surprise)',bdSet:'Set up birthday names'
+  switchTo:'Tap to switch',storageFull:'Phone storage is full, so that photo wasn’t saved.',done:'Done',back:'← Back',tabHome:'Home',createPlayer:'Create a player',clearBoard:'Clear the scoreboard',eraseAll:'Erase everything (start from scratch)',clearBoardMsg:'This removes every scanned player plus any bonus or removed points. Players created on this phone keep their progress.',eraseMsg:'This deletes ALL players, scores and photos on this phone. It can’t be undone.',yesDo:'Yes, do it',cancel:'Cancel',cleared:'All clean ✨',bdSetup:'Birthday surprise',bdHint:'Grown-ups: add the birthday names for the New York hunt. Kids will find a secret Birthday group and a surprise card.',bdName1:'Birthday name',bdName2:'Second name (optional)',bdSave:'Save',bdOff:'Turn off',bdPreview:'👀 Preview the surprise card',bdGroup:'🎂 Birthday',bdCardTitle:'Happy Birthday,',bdCardSub:'New York is celebrating you! 🗽',bdFrom:'With love from the whole crew',bdStart:'Let’s party!',bdBonus:'🎂 Birthday bonus! +{n}',bdEdit:'Edit birthday names',bdAge:'Turning age (optional)',bdBannerOpt:'Show a birthday banner right away (no surprise)',bdSet:'Set up birthday names',tabMem:'Memories',memTitle:'Trip memories',playShow:'▶ Play our slideshow',nPhotos:'{n} photos ready',noPhotosYet:'Take some hunt photos or make a framed photo first!',musicHdr:'Music',musSynth:'🎵 Built-in tune',musFile:'🎶 My own song',musNone:'🔇 No music',framesHdr:'Photo frames',takePic:'📷 Take a photo',pickPic:'🖼️ Choose a photo',saveShare:'⬇️ Save / Share',addShow:'➕ Add to slideshow',framedHdr:'My framed photos',holdSave:'On iPhone you can also press and hold the picture, then tap Save.',added:'Added! ✅',slideTitleNyc:'Our New York Trip',slideTitlePark:'Our Universal Orlando Trip',slideEnd:'The End 💜',replay:'▶ Replay',songSet:'🎶 Song ready!',removeIt:'Remove',momGroup:'💜 For the Moms',deedBtn:'✅ We did it!',deedDone:'💜 +{n} for being kind!',eyesHdr:'Phone-down reminders',eyesHint:'A friendly “eyes up!” break after this many minutes of use.',eyesOff:'Off',eyesTitle:'Eyes up! 👀',eyesBtn:'I looked up! 👍',eyesWait:'Look around… {n}',minutes:'{n} min'
  },
  es:{
   title:'Búsqueda del Tesoro Familiar',setupTitle:'¡Nuevo explorador! 🧭',setupSub:'Elige tu nombre y tu imagen.',namePh:'Tu nombre',pickAnimal:'Elige un animal',orPhoto:'…o usa tu propia foto',
@@ -2462,7 +2488,7 @@ var TX={
   imported:'Actualizado {n}: {p} pts',importSelf:'Ese jugador ya está en este teléfono.',importBad:'Ese código no funcionó.',
   language:'Idioma',hunt:'Búsqueda',players:'Jugadores en este teléfono',newPlayer:'➕ Nuevo jugador',changePic:'Cambiar mi imagen',resetAll:'Empezar un juego nuevo',resetConfirm:'Toca otra vez: se borrarán TODOS los puntajes y fotos',
   offline:'Funciona sin internet después de la primera carga. Agrégalo a tu pantalla de inicio para usarlo como app.',host:'Adulto que lleva el marcador',hostTip:'Lleva el marcador en tu teléfono: los niños tocan “Mi puntaje” y tú escaneas su código con la cámara. Abre esta página en el navegador (no desde un ícono de inicio) para que los códigos lleguen al mismo lugar.',
-  switchTo:'Toca para cambiar',storageFull:'El teléfono no tiene espacio, así que no se guardó la foto.',done:'Listo',back:'← Atrás',tabHome:'Inicio',createPlayer:'Crear un jugador',clearBoard:'Borrar el marcador',eraseAll:'Borrar todo (empezar de cero)',clearBoardMsg:'Esto quita a todos los jugadores escaneados y los puntos extra o quitados. Los jugadores creados en este teléfono conservan su avance.',eraseMsg:'Esto borra TODOS los jugadores, puntajes y fotos de este teléfono. No se puede deshacer.',yesDo:'Sí, hazlo',cancel:'Cancelar',cleared:'Todo limpio ✨',bdSetup:'Sorpresa de cumpleaños',bdHint:'Adultos: agreguen los nombres de los cumpleañeros para la búsqueda de Nueva York. Los niños encontrarán un grupo secreto de cumpleaños y una tarjeta sorpresa.',bdName1:'Nombre del cumpleañero',bdName2:'Segundo nombre (opcional)',bdSave:'Guardar',bdOff:'Quitar',bdPreview:'👀 Ver la tarjeta sorpresa',bdGroup:'🎂 Cumpleaños',bdCardTitle:'¡Feliz cumpleaños,',bdCardSub:'¡Nueva York te celebra! 🗽',bdFrom:'Con cariño de todo el equipo',bdStart:'¡A celebrar!',bdBonus:'🎂 ¡Bono de cumpleaños! +{n}',bdEdit:'Cambiar los nombres',bdAge:'Cumple (edad, opcional)',bdBannerOpt:'Mostrar el letrero de cumpleaños desde el inicio (sin sorpresa)',bdSet:'Agregar nombres de cumpleaños'
+  switchTo:'Toca para cambiar',storageFull:'El teléfono no tiene espacio, así que no se guardó la foto.',done:'Listo',back:'← Atrás',tabHome:'Inicio',createPlayer:'Crear un jugador',clearBoard:'Borrar el marcador',eraseAll:'Borrar todo (empezar de cero)',clearBoardMsg:'Esto quita a todos los jugadores escaneados y los puntos extra o quitados. Los jugadores creados en este teléfono conservan su avance.',eraseMsg:'Esto borra TODOS los jugadores, puntajes y fotos de este teléfono. No se puede deshacer.',yesDo:'Sí, hazlo',cancel:'Cancelar',cleared:'Todo limpio ✨',bdSetup:'Sorpresa de cumpleaños',bdHint:'Adultos: agreguen los nombres de los cumpleañeros para la búsqueda de Nueva York. Los niños encontrarán un grupo secreto de cumpleaños y una tarjeta sorpresa.',bdName1:'Nombre del cumpleañero',bdName2:'Segundo nombre (opcional)',bdSave:'Guardar',bdOff:'Quitar',bdPreview:'👀 Ver la tarjeta sorpresa',bdGroup:'🎂 Cumpleaños',bdCardTitle:'¡Feliz cumpleaños,',bdCardSub:'¡Nueva York te celebra! 🗽',bdFrom:'Con cariño de todo el equipo',bdStart:'¡A celebrar!',bdBonus:'🎂 ¡Bono de cumpleaños! +{n}',bdEdit:'Cambiar los nombres',bdAge:'Cumple (edad, opcional)',bdBannerOpt:'Mostrar el letrero de cumpleaños desde el inicio (sin sorpresa)',bdSet:'Agregar nombres de cumpleaños',tabMem:'Recuerdos',memTitle:'Recuerdos del viaje',playShow:'▶ Ver nuestra presentación',nPhotos:'{n} fotos listas',noPhotosYet:'¡Primero toma fotos de la búsqueda o haz una foto con marco!',musicHdr:'Música',musSynth:'🎵 Melodía incluida',musFile:'🎶 Mi canción',musNone:'🔇 Sin música',framesHdr:'Marcos para fotos',takePic:'📷 Tomar una foto',pickPic:'🖼️ Elegir una foto',saveShare:'⬇️ Guardar / Compartir',addShow:'➕ Agregar a la presentación',framedHdr:'Mis fotos con marco',holdSave:'En iPhone también puedes mantener presionada la imagen y tocar Guardar.',added:'¡Agregada! ✅',slideTitleNyc:'Nuestro viaje a Nueva York',slideTitlePark:'Nuestro viaje a Universal Orlando',slideEnd:'Fin 💜',replay:'▶ Repetir',songSet:'🎶 ¡Canción lista!',removeIt:'Quitar',momGroup:'💜 Para las mamás',deedBtn:'✅ ¡Lo hicimos!',deedDone:'💜 ¡+{n} por ser amable!',eyesHdr:'Recordatorios para soltar el teléfono',eyesHint:'Una pausa amistosa de “¡ojos arriba!” después de estos minutos de uso.',eyesOff:'No',eyesTitle:'¡Ojos arriba! 👀',eyesBtn:'¡Ya miré! 👍',eyesWait:'Mira alrededor… {n}',minutes:'{n} min'
  }
 };
 var LANG=(function(){try{var l=localStorage.getItem('hunt2_lang');if(l)return l}catch(e){}return /^es/i.test(navigator.language||'')?'es':'en'})();
@@ -2473,6 +2499,15 @@ function P(id,pts,g,en,es){return {id:id,type:'photo',pts:pts,g:g,l:{en:{t:en[0]
 function RQ(id,g,en,es,a){return {id:id,type:'riddle',pts:10,g:g,l:{en:en,es:es},a:a}}
 function RP(m,pts){m.pts=pts;return m}
 function RR(id,g,qe,oe,he,qs,os,hs,a){return RQ(id,g,{q:qe,o:oe,h:he},{q:qs,o:os,h:hs},a)}
+function DD(id,pts,g,en,es){return {id:id,type:'deed',pts:pts,g:g,l:{en:{t:en[0],d:en[1]},es:{t:es[0],d:es[1]}}}}
+function MOMM(){return [
+ P('mm1',20,'mom',['A big hug with Mom','Squeeeeeze! Take a photo of the hug'],['Un abrazo grande con mamá','¡Apapacho! Toma una foto del abrazo']),
+ P('mm2',15,'mom',['Make a heart with Mom','Hands together, or each of you makes half a heart'],['Haz un corazón con mamá','Con las manos juntas, o cada una hace medio corazón']),
+ P('mm3',15,'mom',['Mom’s helper','Carry her bag or coat for a while: photo of you helping'],['Ayudante de mamá','Cárgale la bolsa o el abrigo un rato: foto de ti ayudando']),
+ DD('mm4',15,'mom',['Three things you love about Mom','Say them out loud to her. Then tap “We did it!”'],['Tres cosas que quieres de mamá','Díselas en voz alta. Luego toca “¡Lo hicimos!”']),
+ DD('mm5',10,'mom',['Say thank you','Thank Mom for something special she did today'],['Da las gracias','Dale las gracias a mamá por algo especial que hizo hoy']),
+ DD('mm6',10,'mom',['A surprise kiss','Give Mom a kiss on the cheek when she isn’t expecting it'],['Un beso sorpresa','Dale a mamá un beso en la mejilla cuando no lo espere'])
+]}
 function BDM(pre,sEn,sEs){return [
  P(pre+'1',20,'bd',['Birthday toast for {a}','Clink cups or desserts and cheer!'],['Brindis de cumpleaños para {a}','¡Choquen vasos o postres y griten hurra!']),
  P(pre+'2',20,'bd',['Make a wish for {b}','A candle, a sparkler or twinkling lights'],['Pide un deseo por {b}','Una vela, una luz de bengala o luces brillantes']),
@@ -2493,7 +2528,7 @@ var RID=[
 ];
 var PACKS={
  park:{emoji:'🎢',name:{en:'Universal Orlando',es:'Universal Orlando'},
-  groups:[{k:'d1',en:'Day 1: Studios + Islands',es:'Día 1: Studios + Islands'},{k:'d2',en:'Day 2: Epic Universe',es:'Día 2: Epic Universe'},{k:'any',en:'Anywhere',es:'En cualquier lugar'},{k:'fun',en:'Brain teasers',es:'Acertijos'}],
+  groups:[{k:'d1',en:'Day 1: Studios + Islands',es:'Día 1: Studios + Islands'},{k:'d2',en:'Day 2: Epic Universe',es:'Día 2: Epic Universe'},{k:'any',en:'Anywhere',es:'En cualquier lugar'},{k:'mom',en:'💜 For the Moms',es:'💜 Para las mamás'},{k:'fun',en:'Brain teasers',es:'Acertijos'}],
   missions:[].concat([
   P('u1',10,'d1',['The silliest, curviest, most colorful thing','Pose just like it (wonky is perfect)'],['Lo más chistoso, curvo y colorido','Haz la misma pose (¡lo torcido vale!)']),
   P('u2',10,'d1',['A dinosaur! Roar next to it','Look for the giant prehistoric creatures'],['¡Un dinosaurio! Ruge a su lado','Busca las criaturas prehistóricas gigantes']),
@@ -2525,9 +2560,9 @@ var PACKS={
   RR('k4','d2','What do dragons in stories usually breathe out?',['Fire','Bubbles','Glitter'],'It’s hot!','¿Qué suelen echar por la boca los dragones de los cuentos?',['Fuego','Burbujas','Brillantina'],'¡Es caliente!',0),
   RR('t1','fun','Which of these do you ALWAYS need to ride a roller coaster?',['A swimsuit','To follow the safety rules','A hat'],'It keeps everyone safe.','¿Qué necesitas SIEMPRE para subirte a una montaña rusa?',['Un traje de baño','Seguir las reglas de seguridad','Un sombrero'],'Mantiene a todos seguros.',1),
   RR('t2','fun','A ride goes round and round. What shape is its path?',['A circle','A triangle','A square'],'Think of a wheel.','Una atracción gira y gira. ¿Qué forma tiene su camino?',['Un círculo','Un triángulo','Un cuadrado'],'Piensa en una rueda.',0)
- ],BDM('ub','a big park landmark','un lugar emblemático del parque'),RID)},
+ ],BDM('ub','a big park landmark','un lugar emblemático del parque'),MOMM(),RID)},
  nyc:{emoji:'🗽',name:{en:'New York City',es:'Nueva York'},
-  groups:[{k:'mid',en:'Midtown',es:'Midtown'},{k:'harb',en:'Harbor + Downtown',es:'Puerto + Bajo Manhattan'},{k:'hol',en:'Holiday + Parks',es:'Navidad + Parques'},{k:'eat',en:'Eats + Shops',es:'Comida + Tiendas'},{k:'go',en:'Getting Around',es:'Moverse'},{k:'fun',en:'Brain teasers',es:'Acertijos'}],
+  groups:[{k:'mid',en:'Midtown',es:'Midtown'},{k:'harb',en:'Harbor + Downtown',es:'Puerto + Bajo Manhattan'},{k:'hol',en:'Holiday + Parks',es:'Navidad + Parques'},{k:'eat',en:'Eats + Shops',es:'Comida + Tiendas'},{k:'go',en:'Getting Around',es:'Moverse'},{k:'mom',en:'💜 For the Moms',es:'💜 Para las mamás'},{k:'fun',en:'Brain teasers',es:'Acertijos'}],
   missions:[].concat([
   P('y1',15,'mid',['Team selfie in Times Square','Glowing screens everywhere!'],['Selfie de equipo en Times Square','¡Pantallas brillantes por todos lados!']),
   P('y2',10,'mid',['The big Radio City sign','Before the Rockettes kick off'],['El gran letrero de Radio City','Antes de que empiecen las Rockettes']),
@@ -2563,7 +2598,7 @@ var PACKS={
   RR('q8','harb','How do people usually get to the Statue of Liberty?',['By ferry','By hot-air balloon','By skateboard'],'A boat that carries lots of people.','¿Cómo se llega normalmente a la Estatua de la Libertad?',['En ferry','En globo aerostático','En patineta'],'Un barco que lleva a mucha gente.',0),
   RR('q9','mid','What is painted on the ceiling of Grand Central?',['Stars and constellations','Ice cream cones','Cartoon dinosaurs'],'Look up at the night sky.','¿Qué está pintado en el techo de Grand Central?',['Estrellas y constelaciones','Helados de cono','Dinosaurios de caricatura'],'Mira al cielo de noche.',0),
   RR('q10','go','The Roosevelt Island Tram travels…',['On cables high above the river','Under the water','On roller skates'],'Look up from the ground and you can see it.','El tranvía de Roosevelt Island viaja…',['Colgado de cables sobre el río','Bajo el agua','En patines'],'Desde el suelo lo ves arriba.',0)
- ],BDM('bd','a big New York sight','un lugar famoso de Nueva York'),RID)}
+ ],BDM('bd','a big New York sight','un lugar famoso de Nueva York'),MOMM(),RID)}
 };
 function findMission(id){for(var k in PACKS){var m=PACKS[k].missions.filter(function(x){return x.id===id})[0];if(m)return m}return null}
 function bdc(){return (D.bdays&&D.bdays[curKey()])||null}
@@ -2583,15 +2618,17 @@ function $(s){return document.querySelector(s)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 var KEY='hunt2',PKEY='hunt2_ph';
 var D={pack:'park',me:'',profiles:{},imported:{},meta:{}};
-var PH={};
+var PH={};var FR={};
 (function(){try{var r=localStorage.getItem(KEY);if(r)D=Object.assign(D,JSON.parse(r))}catch(e){}try{var p=localStorage.getItem(PKEY);if(p)PH=JSON.parse(p)}catch(e){}})();
+try{var fr0=localStorage.getItem('hunt2_fr');if(fr0)FR=JSON.parse(fr0)}catch(e){}
 if(D.bday&&!D.bdays){D.bdays={nyc:D.bday};delete D.bday}
 D.bdays=D.bdays||{};D.seen=D.seen||{};
 function save(){try{localStorage.setItem(KEY,JSON.stringify(D));return true}catch(e){return false}}
+function saveFr(){try{localStorage.setItem('hunt2_fr',JSON.stringify(FR));return true}catch(e){return false}}
 function savePh(){try{localStorage.setItem(PKEY,JSON.stringify(PH));return true}catch(e){return false}}
 function setLang(l){LANG=l;try{localStorage.setItem('hunt2_lang',l)}catch(e){}document.documentElement.lang=l;document.title=t('title')}
 
-var S={tab:'missions',filter:'all',group:'all',screen:'',avatar:AVATARS[0],avPhoto:'',draft:'',skip:false,rm:null,riddle:null,pending:null,detail:null,reset:false,newPack:'park',prevMe:'',ask:''};
+var S={tab:'missions',filter:'all',group:'all',screen:'',avatar:AVATARS[0],avPhoto:'',draft:'',skip:false,rm:null,riddle:null,pending:null,detail:null,reset:false,newPack:'park',prevMe:'',ask:'',music:'synth',frame:'nyc',lastFrame:'',viewFr:''};
 
 /* ---------- scoring ---------- */
 function entries(){
@@ -2616,7 +2653,7 @@ function render(){
  if(!me()&&!S.skip){a.innerHTML=setup();return}
  if(!me()&&S.tab==='missions')S.tab='board';
  var head=me()?headHtml():'<div class="top"><div class="me"><span class="av">🏆</span><span style="min-width:0"><div class="nm">'+esc(t('host'))+'</div></span></div><button class="btn sm" data-act="newPlayer" style="white-space:nowrap">➕ '+esc(t('createPlayer'))+'</button></div>';
- var body=S.tab==='missions'?missions():S.tab==='share'?share():S.tab==='board'?board():settings();
+ var body=S.tab==='missions'?missions():S.tab==='share'?share():S.tab==='board'?board():S.tab==='mem'?memories():settings();
  a.innerHTML=head+body+nav();
 }
 function setup(){
@@ -2633,7 +2670,7 @@ function headHtml(){
 }
 function nav(){
  function b(k,i,l){return '<button data-act="tab" data-t="'+k+'" class="'+(S.tab===k?'on':'')+'"><span>'+i+'</span>'+esc(t(l))+'</button>'}
- return '<nav><div class="in">'+(me()?b('missions','🧭','tabMissions')+b('share','📱','tabShare'):'<button data-act="newPlayer"><span>🏠</span>'+esc(t('tabHome'))+'</button>')+b('board','🏆','tabBoard')+b('settings','⚙️','tabSettings')+'</div></nav>';
+ return '<nav><div class="in">'+(me()?b('missions','🧭','tabMissions')+b('share','📱','tabShare'):'<button data-act="newPlayer"><span>🏠</span>'+esc(t('tabHome'))+'</button>')+b('board','🏆','tabBoard')+b('mem','🎞️','tabMem')+b('settings','⚙️','tabSettings')+'</div></nav>';
 }
 function curPack(){var p=me();return PACKS[(p&&p.pack)||D.pack]||PACKS.park}
 function missions(){
@@ -2644,7 +2681,7 @@ function missions(){
  if(gs.length){chips='<div class="chips" style="margin-bottom:0"><button class="chip '+(S.group==='all'?'on':'')+'" data-act="group" data-g="all">'+esc(t('fAll'))+'</button>'+gs.map(function(g){return '<button class="chip '+(S.group===g.k?'on':'')+'" data-act="group" data-g="'+g.k+'">'+esc(g[LANG]||g.en)+'</button>'}).join('')+'</div>'+chips}
  var cards=list.filter(function(m){return (f==='all'||m.type===f)&&(S.group==='all'||m.g===S.group)}).map(function(m){
   var st=d[m.id],ph=PH[D.me+'_'+m.id];
-  var ic=ph?'<img alt="" src="'+esc(ph)+'">':(m.g==='bd'?'🎂':m.type==='photo'?'📸':'🧩');
+  var ic=ph?'<img alt="" src="'+esc(ph)+'">':(m.g==='bd'?'🎂':m.type==='deed'?'💜':m.type==='photo'?'📸':'🧩');
   return '<button class="card '+m.type+(st?' done':'')+'" data-act="mission" data-id="'+m.id+'"'+(st?' disabled':'')+'><span class="ic">'+ic+'</span><span><div class="t">'+esc(mtitle(m))+'</div><div class="d">'+esc(mdesc(m))+'</div></span><span class="pts">'+(st?'✅ +'+st.pts:m.pts)+'</span></button>';
  }).join('');
  return bdBanner()+'<div class="muted" style="margin-top:4px">'+esc(t('mDone',{n:n,t:list.length}))+'</div><div class="prog"><i style="width:'+Math.round(n/list.length*100)+'%"></i></div>'+chips+cards+'<div class="tip">'+esc(t('safety'))+'</div>';
@@ -2683,6 +2720,7 @@ function settings(){
  return '<div class="sec">'+esc(t('language'))+'</div><div class="row2"><button class="btn alt sm '+(LANG==='en'?'on':'')+'" data-act="lang" data-l="en">English</button><button class="btn alt sm '+(LANG==='es'?'on':'')+'" data-act="lang" data-l="es">Español</button></div>'+
   (me()?'<div class="sec">'+esc(t('hunt'))+'</div><div class="pk">'+pk+'</div>':'')+
   '<div class="sec">'+esc(t('players'))+'</div>'+pl+'<button class="btn alt" data-act="newPlayer">'+esc(t('newPlayer'))+'</button>'+(me()?'<button class="btn alt" data-act="changePic">'+esc(t('changePic'))+'</button>':'')+
+  '<div class="sec">👀 '+esc(t('eyesHdr'))+'</div><p class="muted">'+esc(t('eyesHint'))+'</p><div class="chips">'+[0,5,10,15].map(function(m){return '<button class="chip '+(eyesMin()===m?'on':'')+'" data-act="eyes" data-m="'+m+'">'+esc(m?t('minutes',{n:m}):t('eyesOff'))+'</button>'}).join('')+'</div>'+
   '<div class="sec">🎂 '+esc(t('bdSetup'))+' · '+esc(curPack().name[LANG])+'</div><p class="muted">'+esc(t('bdHint'))+'</p><button class="btn alt" data-act="bdOpen">'+esc(bdActive()?t('bdEdit')+': '+bdNames():t('bdSet'))+'</button>'+(bdActive()?'<button class="btn alt" data-act="showCard">'+esc(t('bdPreview'))+'</button>':'')+'<div class="sec">'+esc(t('host'))+'</div><p class="muted">'+esc(t('hostTip'))+'</p><p class="muted">'+esc(t('offline'))+'</p><button class="btn alt" data-act="ask" data-k="board">'+esc(t('clearBoard'))+'</button><button class="btn alt" data-act="ask" data-k="all" style="color:#e5484d;border-color:#f3a9a9">'+esc(t('eraseAll'))+'</button>';
 }
 
@@ -2724,6 +2762,23 @@ var A={
  pick:function(d){D.me=d.id;save();S.tab='missions';render()},
  tab:function(d){S.tab=d.t;S.reset=false;render();window.scrollTo(0,0)},
  filter:function(d){S.filter=d.f;render()},
+ deedYes:function(d){var m=findMission(d.id),p=me();if(!m||!p)return;p.done[m.id]={pts:m.pts,type:'deed',ts:Date.now()};save();closeModal();toast(t('deedDone',{n:m.pts}));confetti();render()},
+ eyes:function(d){D.eyes=+d.m;save();EY.sec=0;render()},
+ eyesOk:function(){var el=$('#eyes');el.className='';el.innerHTML='';EY.open=false;EY.sec=0;clearInterval(EY.timer)},
+ showStart:function(){showStart()},
+ showClose:function(){showClose()},
+ showPause:function(){SH.paused=!SH.paused;if(SH.paused){clearTimeout(SH.t);if(MU.audio)MU.audio.pause();if(MU.ctx&&MU.ctx.suspend)MU.ctx.suspend()}else{if(MU.audio)MU.audio.play().catch(function(){});if(MU.ctx&&MU.ctx.resume)MU.ctx.resume();SH.t=setTimeout(showNext,800)}},
+ showSkip:function(){if(!SH.paused)showNext();else{showNext()}},
+ showMute:function(){MU.muted=!MU.muted;if(MU.muted)musicStop();else musicStart()},
+ showReplay:function(){SH.i=-1;SH.paused=false;showNext();musicStart()},
+ music:function(d){if(d.m==='file'){var f=$('#fMus');f.value='';f.click();return}S.music=d.m;render()},
+ frame:function(d){S.frame=d.k;var f=FRM[d.k];openModal('<h2>'+esc(f.emoji+' '+(f[LANG]||f.en))+'</h2><button class="btn" data-act="frameCam">'+esc(t('takePic'))+'</button><button class="btn alt" data-act="frameLib">'+esc(t('pickPic'))+'</button><button class="btn alt" data-act="close">'+esc(t('close'))+'</button>')},
+ frameCam:function(){closeModal();var f=$('#fFrCam');f.value='';f.click()},
+ frameLib:function(){closeModal();var f=$('#fFrLib');f.value='';f.click()},
+ frameSave:function(){shareImg(S.lastFrame,'hunt-frame.jpg')},
+ frameAdd:function(){var id='f'+Date.now(),k=S.frame||'nyc';FR[id]={img:S.lastFrame,ts:Date.now(),pack:k==='orl'?'park':'nyc',frame:k};if(!saveFr()){delete FR[id];toast(t('storageFull'))}else toast(t('added'));closeModal();render()},
+ frameView:function(d){var f=FR[d.id];if(!f)return;S.lastFrame=f.img;S.viewFr=d.id;openModal('<img alt="" src="'+esc(f.img)+'" style="width:100%;border-radius:14px"><button class="btn" data-act="frameSave">'+esc(t('saveShare'))+'</button><button class="btn alt" data-act="frameRm">'+esc(t('removeIt'))+'</button><button class="btn alt" data-act="close">'+esc(t('close'))+'</button><p class="muted">'+esc(t('holdSave'))+'</p>')},
+ frameRm:function(){delete FR[S.viewFr];saveFr();closeModal();render()},
  group:function(d){S.group=d.g;if(d.g==='bd'&&bdActive()&&!D.seen[curKey()]){D.seen[curKey()]=1;save();showCard()}render()},
  egg:function(){var n=Date.now();S.eggs=(S.eggs||[]).filter(function(x){return n-x<2500});S.eggs.push(n);if(S.eggs.length>=5){S.eggs=[];if(bdActive())showCard();else toast('🥚')}},
  showCard:function(){showCard()},
@@ -2734,9 +2789,10 @@ var A={
  pack:function(d){var p=me();if(p){p.pack=d.k}D.pack=d.k;S.group='all';save();render()},
  changePic:function(){S.target='mine';var f=$('#fLib');f.value='';f.click()},
  ask:function(d){S.ask=d.k;openModal('<h2>⚠️ '+esc(t(d.k==='all'?'eraseAll':'clearBoard'))+'</h2><p>'+esc(t(d.k==='all'?'eraseMsg':'clearBoardMsg'))+'</p><button class="btn red" data-act="doAsk">'+esc(t('yesDo'))+'</button><button class="btn alt" data-act="close">'+esc(t('cancel'))+'</button>')},
- doAsk:function(){var k=S.ask;S.ask='';if(k==='all'){D={pack:D.pack,me:'',profiles:{},imported:{},meta:{},bdays:D.bdays,seen:{}};PH={};save();savePh();S.skip=false;S.prevMe='';S.tab='missions'}else{D.imported={};D.meta={};save()}closeModal();render();toast(t('cleared'))},
+ doAsk:function(){var k=S.ask;S.ask='';if(k==='all'){D={pack:D.pack,me:'',profiles:{},imported:{},meta:{},bdays:D.bdays,seen:{}};PH={};FR={};save();savePh();saveFr();S.skip=false;S.prevMe='';S.tab='missions'}else{D.imported={};D.meta={};save()}closeModal();render();toast(t('cleared'))},
  mission:function(d){
   var m=findMission(d.id);if(!m||!me())return;
+  if(m.type==='deed'){var dx=mtext(m);openModal('<h2>💜 '+esc(dx.t)+'</h2><p class="q" style="font-size:18px">'+esc(dx.d)+'</p><button class="btn" data-act="deedYes" data-id="'+m.id+'">'+esc(t('deedBtn'))+' +'+m.pts+'</button><button class="btn alt" data-act="close">'+esc(t('close'))+'</button>');return}
   if(m.type==='photo'){S.pending=m;var f=$('#fCam');f.value='';f.click();return}
   S.riddle={m:m,bad:[],hint:false,pts:function(){return Math.max(2,m.pts-3*this.bad.length-(this.hint?2:0))}};
   openModal(riddleHtml());
@@ -2795,6 +2851,129 @@ $('#fCam').addEventListener('change',function(){
   render();
  }).catch(function(){toast(t('photoFail'))});
 });
+
+/* ---------- phone-down reminders ---------- */
+var EY={sec:0,last:Date.now(),hid:0,open:false,n:0,timer:null};
+var EYES={
+ en:['Find 3 things that are red 🔴','Give someone in your family a high five ✋','Look up and count the clouds or the tallest buildings ☁️','Take 5 slow breaths and look at the sky 🌤️','Wave at someone in your group 👋','Find the funniest shape you can see 🔍','Tell a grown-up your favorite thing so far 💬','Spot something moving: a bird, a ride, a car 🐦'],
+ es:['Encuentra 3 cosas rojas 🔴','Choca los cinco con alguien de tu familia ✋','Mira arriba y cuenta las nubes o los edificios más altos ☁️','Respira lento 5 veces mirando el cielo 🌤️','Saluda a alguien de tu grupo 👋','Encuentra la forma más chistosa que veas 🔍','Cuéntale a un adulto lo que más te ha gustado 💬','Busca algo que se mueva: un pájaro, una atracción, un carro 🐦']
+};
+function eyesMin(){return (D.eyes===0||D.eyes)?D.eyes:10}
+function showEyes(){
+ EY.open=true;var L=EYES[LANG]||EYES.en,txt=L[EY.n++%L.length],el=$('#eyes'),n=5;
+ el.innerHTML='<div class="cardin"><div class="cake">👀</div><h1>'+esc(t('eyesTitle'))+'</h1><p>'+esc(txt)+'</p><button class="btn" id="eyesBtn" disabled style="background:#fff;color:#10b5a5;opacity:.7">'+esc(t('eyesWait',{n:n}))+'</button></div>';
+ el.className='show';clearInterval(EY.timer);
+ EY.timer=setInterval(function(){n--;var b=$('#eyesBtn');if(!b){clearInterval(EY.timer);return}
+  if(n<=0){clearInterval(EY.timer);b.disabled=false;b.style.opacity=1;b.setAttribute('data-act','eyesOk');b.textContent=t('eyesBtn')}else b.textContent=t('eyesWait',{n:n})},1000);
+}
+setInterval(function(){
+ var now=Date.now();
+ if(document.visibilityState==='hidden'){if(!EY.hid)EY.hid=now;EY.last=now;return}
+ if(EY.hid&&now-EY.hid>60000)EY.sec=0;EY.hid=0;
+ var dt=Math.min(now-EY.last,2000);EY.last=now;
+ var m=eyesMin();if(!m||EY.open||!me()||$('#show').className==='show')return;
+ EY.sec+=dt/1000;if(EY.sec>=m*60)showEyes();
+},1000);
+
+/* ---------- photo frames ---------- */
+var FRM={
+ nyc:{emoji:'🎄',en:'Happy Holidays from New York',es:'Felices fiestas desde Nueva York',c1:'#b3202a',c2:'#1d6b3a',deco:['❄️','⭐','🎄','🗽'],ribbon:'#fff7e8',ink:'#1d1b3a'},
+ orl:{emoji:'🎢',en:'Universal Studios Orlando',es:'Universal Studios Orlando',c1:'#6c4cf1',c2:'#ff5c8a',deco:['⭐','🎢','✨','🎆'],ribbon:'#fff7e8',ink:'#1d1b3a'}
+};
+function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
+function composeFrame(src,key,cb){
+ var f=FRM[key]||FRM.nyc,im=new Image();
+ im.onerror=function(){toast(t('photoFail'))};
+ im.onload=function(){
+  var W=720,H=920,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+  var g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,f.c1);g.addColorStop(1,f.c2);x.fillStyle=g;x.fillRect(0,0,W,H);
+  var px=40,py=44,pw=W-80,ph=700;
+  x.save();rr(x,px,py,pw,ph,28);x.clip();
+  var sc=Math.max(pw/im.width,ph/im.height),dw=im.width*sc,dh=im.height*sc;x.drawImage(im,px+(pw-dw)/2,py+(ph-dh)/2,dw,dh);x.restore();
+  x.lineWidth=8;x.strokeStyle='#fff';rr(x,px,py,pw,ph,28);x.stroke();
+  var ry=py+ph+22;x.fillStyle=f.ribbon;rr(x,60,ry,W-120,100,24);x.fill();
+  var txt=f[LANG]||f.en,fs=46;x.fillStyle=f.ink;x.textAlign='center';x.textBaseline='middle';
+  do{x.font='800 '+fs+'px ui-rounded,system-ui,sans-serif';fs-=2}while(x.measureText(txt).width>W-170&&fs>20);
+  x.fillText(txt,W/2,ry+40);
+  x.font='700 24px ui-rounded,system-ui,sans-serif';x.fillStyle=f.c1;x.fillText(f.deco[1]+'  '+(new Date()).getFullYear()+'  '+f.deco[1],W/2,ry+78);
+  x.font='30px serif';
+  for(var i=0;i<9;i++){x.fillText(f.deco[i%f.deco.length],60+i*75,22);x.fillText(f.deco[(i+2)%f.deco.length],60+i*75,H-22)}
+  cb(c.toDataURL('image/jpeg',0.82));
+ };
+ im.src=src;
+}
+function dataBlob(u){var p=u.split(','),m=/data:([^;]+)/.exec(p[0])[1],b=atob(p[1]),n=b.length,a=new Uint8Array(n);while(n--)a[n]=b.charCodeAt(n);return new Blob([a],{type:m})}
+function shareImg(u,name){
+ var bl=dataBlob(u),f=null;try{f=new File([bl],name,{type:'image/jpeg'})}catch(e){}
+ if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:t('title')}).catch(function(){});return}
+ var a=document.createElement('a');a.href=URL.createObjectURL(bl);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){if(a.parentNode)a.parentNode.removeChild(a)},600);
+}
+function onFramePhoto(){
+ var f=this.files&&this.files[0];if(!f)return;
+ shrink(f,900,0.85,false).then(function(img){
+  composeFrame(img,S.frame,function(out){
+   S.lastFrame=out;
+   openModal('<img alt="" src="'+esc(out)+'" style="width:100%;border-radius:14px"><button class="btn" data-act="frameSave">'+esc(t('saveShare'))+'</button><button class="btn alt" data-act="frameAdd">'+esc(t('addShow'))+'</button><button class="btn alt" data-act="close">'+esc(t('close'))+'</button><p class="muted">'+esc(t('holdSave'))+'</p>');
+  });
+ }).catch(function(){toast(t('photoFail'))});
+}
+$('#fFrCam').addEventListener('change',onFramePhoto);
+$('#fFrLib').addEventListener('change',onFramePhoto);
+
+/* ---------- music ---------- */
+var MU={ctx:null,t:null,step:0,audio:null,url:'',muted:false};
+var CH=[[261.63,329.63,392,523.25,392,329.63,392,659.25],[220,261.63,329.63,440,329.63,261.63,329.63,523.25],[174.61,220,261.63,349.23,261.63,220,261.63,440],[196,246.94,293.66,392,293.66,246.94,293.66,493.88]];
+function tone(f,v,d){var c=MU.ctx,o=c.createOscillator(),g=c.createGain(),n=c.currentTime;o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0.0001,n);g.gain.exponentialRampToValueAtTime(v,n+0.01);g.gain.exponentialRampToValueAtTime(0.0001,n+d);o.connect(g);g.connect(c.destination);o.start(n);o.stop(n+d+0.05)}
+function musicStop(){clearInterval(MU.t);MU.t=null;if(MU.audio){MU.audio.pause();MU.audio=null}}
+function musicStart(){
+ musicStop();if(S.music==='none'||MU.muted)return;
+ if(S.music==='file'&&MU.url){MU.audio=new Audio(MU.url);MU.audio.loop=true;MU.audio.volume=0.85;MU.audio.play().catch(function(){});return}
+ var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+ try{MU.ctx=MU.ctx||new AC();if(MU.ctx.resume)MU.ctx.resume()}catch(e){return}
+ MU.step=0;var tempo=curKey()==='nyc'?300:240;
+ MU.t=setInterval(function(){var n=MU.step++,ch=CH[Math.floor(n/8)%4],fq=ch[n%8];tone(fq,0.10,0.9);if(n%8===0)tone(ch[0]/2,0.08,1.6);if(n%4===2)tone(fq*2,0.03,0.5)},tempo);
+}
+$('#fMus').addEventListener('change',function(){var f=this.files&&this.files[0];if(!f)return;if(MU.url)URL.revokeObjectURL(MU.url);MU.url=URL.createObjectURL(f);S.music='file';toast(t('songSet'));render()});
+
+/* ---------- slideshow ---------- */
+var SH={slides:[],i:-1,t:null,paused:false};
+function photoSlides(){
+ var out=[],ids={};curPack().missions.forEach(function(m){ids[m.id]=m});
+ Object.keys(D.profiles).forEach(function(pid){var p=D.profiles[pid];for(var k in (p.done||{})){var ph=PH[pid+'_'+k];if(ph&&ids[k])out.push({img:ph,cap:mtext(ids[k]).t+' · '+p.name,ts:p.done[k].ts||0,ms:4500})}});
+ Object.keys(FR).forEach(function(id){var f=FR[id];if(f.pack===curKey())out.push({img:f.img,cap:'',ts:f.ts||0,ms:5000})});
+ return out.sort(function(a,b){return a.ts-b.ts});
+}
+function buildSlides(){
+ var ps=photoSlides();if(!ps.length)return [];
+ return [{kind:'title',title:t(curKey()==='nyc'?'slideTitleNyc':'slideTitlePark'),sub:String((new Date()).getFullYear()),ms:3500}].concat(ps,[{kind:'end',title:t('slideEnd'),ms:0}]);
+}
+function placeSlide(){
+ var s=SH.slides[SH.i],st=$('#stage'),d=document.createElement('div');d.className='slide';
+ if(s.kind){d.innerHTML='<div class="tslide"><div class="cake">'+(s.kind==='end'?'💜':'🎞️')+'</div><h1>'+esc(s.title)+'</h1>'+(s.sub?'<p>'+esc(s.sub)+'</p>':'')+(s.kind==='end'?'<button class="btn" data-act="showReplay" style="background:#fff;color:#6c4cf1">'+esc(t('replay'))+'</button><button class="btn alt" data-act="showClose">'+esc(t('close'))+'</button>':'')+'</div>'}
+ else{d.innerHTML='<div class="bg" style="background-image:url('+s.img+')"></div><img alt="" src="'+s.img+'"><div class="cap">'+esc(s.cap)+'</div>'}
+ Array.prototype.forEach.call(st.querySelectorAll('.slide'),function(o){o.classList.add('out');setTimeout(function(){if(o.parentNode)o.parentNode.removeChild(o)},950)});
+ st.appendChild(d);
+}
+function showNext(){
+ clearTimeout(SH.t);if(SH.i>=SH.slides.length-1)return;
+ SH.i++;placeSlide();var s=SH.slides[SH.i];
+ if(s.ms&&!SH.paused)SH.t=setTimeout(showNext,s.ms);
+}
+function showStart(){
+ var sl=buildSlides();if(!sl.length){toast(t('noPhotosYet'));return}
+ SH.slides=sl;SH.i=-1;SH.paused=false;MU.muted=false;$('#stage').innerHTML='';$('#show').className='show';
+ musicStart();showNext();
+}
+function showClose(){clearTimeout(SH.t);musicStop();if(MU.ctx&&MU.ctx.suspend)MU.ctx.suspend();$('#show').className='';$('#stage').innerHTML=''}
+
+/* ---------- memories screen ---------- */
+function memories(){
+ var n=photoSlides().length;
+ var mus=[['synth','musSynth'],['file','musFile'],['none','musNone']].map(function(c){return '<button class="chip '+(S.music===c[0]?'on':'')+'" data-act="music" data-m="'+c[0]+'">'+esc(t(c[1]))+'</button>'}).join('');
+ var fr=Object.keys(FRM).map(function(k){return '<button class="framebtn" data-act="frame" data-k="'+k+'">'+esc(FRM[k].emoji+' '+(FRM[k][LANG]||FRM[k].en))+'</button>'}).join('');
+ var grid=Object.keys(FR).sort(function(a,b){return (FR[b].ts||0)-(FR[a].ts||0)}).map(function(id){return '<button class="shot" data-act="frameView" data-id="'+esc(id)+'"><img alt="" src="'+esc(FR[id].img)+'"></button>'}).join('');
+ return '<h2 style="margin:10px 0">🎞️ '+esc(t('memTitle'))+'</h2><button class="btn" data-act="showStart">'+esc(t('playShow'))+'</button><p class="muted">'+esc(t('nPhotos',{n:n}))+'</p><div class="sec">'+esc(t('musicHdr'))+'</div><div class="chips">'+mus+'</div><div class="sec">'+esc(t('framesHdr'))+'</div>'+fr+(grid?'<div class="sec">'+esc(t('framedHdr'))+'</div><div class="shots">'+grid+'</div>':'');
+}
 
 /* ---------- birthday card ---------- */
 function confetti(host){
