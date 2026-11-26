@@ -104,12 +104,24 @@ input[type=text]{width:100%;font:inherit;font-size:20px;font-weight:700;padding:
 #toast.show{transform:translate(-50%,0)}
 .muted{color:var(--mute);font-size:13px}
 .tip{font-size:13px;color:var(--mute);margin:14px 0;line-height:1.4}
+.bdbanner{background:linear-gradient(90deg,#6c4cf1,#ff5c8a,#ffc233);color:#fff;font-weight:900;text-align:center;border-radius:16px;padding:12px;margin:6px 0 4px;font-size:17px;cursor:pointer}
+#card{position:fixed;inset:0;z-index:40;display:none;background:linear-gradient(160deg,#6c4cf1,#ff5c8a 60%,#ffc233);color:#fff;align-items:center;justify-content:center;text-align:center;padding:24px}
+#card.show{display:flex}
+.cardin{max-width:420px}
+.cardin h1{font-size:36px;line-height:1.15;margin:8px 0}
+.cardin p{font-size:18px;font-weight:700;margin:8px 0}
+.cake{font-size:96px;animation:bob 1.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-12px) rotate(4deg)}}
+.conf{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:60}
+.conf span{position:absolute;top:-40px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(540deg)}}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <div id="modal"></div>
 <div id="toast"></div>
+<div id="card"></div>
 <input type="file" id="fSel" accept="image/*" capture="user" hidden>
 <input type="file" id="fLib" accept="image/*" hidden>
 <input type="file" id="fCam" accept="image/*" capture="environment" hidden>
@@ -2434,7 +2446,7 @@ var TX={
   imported:'Updated {n}: {p} pts',importSelf:'That’s a player on this phone already.',importBad:'That score code didn’t work.',
   language:'Language',hunt:'Hunt',players:'Players on this phone',newPlayer:'➕ New player',changePic:'Change my picture',resetAll:'Start a new game',resetConfirm:'Tap again: this clears ALL scores and photos',
   offline:'Works offline after the first load. Add it to your home screen for a full-screen app.',host:'Grown-up scorekeeper',hostTip:'Keep score on your phone: kids tap “My score”, you scan their code with your camera. Open this page in your browser (not a home-screen icon) so scans land in the same place.',
-  switchTo:'Tap to switch',storageFull:'Phone storage is full, so that photo wasn’t saved.',done:'Done',back:'Back'
+  switchTo:'Tap to switch',storageFull:'Phone storage is full, so that photo wasn’t saved.',done:'Done',back:'← Back',tabHome:'Home',createPlayer:'Create a player',clearBoard:'Clear the scoreboard',eraseAll:'Erase everything (start from scratch)',clearBoardMsg:'This removes every scanned player plus any bonus or removed points. Players created on this phone keep their progress.',eraseMsg:'This deletes ALL players, scores and photos on this phone. It can’t be undone.',yesDo:'Yes, do it',cancel:'Cancel',cleared:'All clean ✨',bdSetup:'Birthday surprise',bdHint:'Grown-ups: add the birthday names for the New York hunt. Kids will find a secret Birthday group and a surprise card.',bdName1:'Birthday name',bdName2:'Second name (optional)',bdSave:'Save',bdOff:'Turn off',bdPreview:'👀 Preview the surprise card',bdGroup:'🎂 Birthday',bdCardTitle:'Happy Birthday,',bdCardSub:'New York is celebrating you! 🗽',bdFrom:'With love from the whole crew',bdStart:'Let’s party!',bdBonus:'🎂 Birthday bonus! +{n}',bdEdit:'Edit birthday names',bdAge:'Turning age (optional)',bdBannerOpt:'Show a birthday banner right away (no surprise)',bdSet:'Set up birthday names'
  },
  es:{
   title:'Búsqueda del Tesoro Familiar',setupTitle:'¡Nuevo explorador! 🧭',setupSub:'Elige tu nombre y tu imagen.',namePh:'Tu nombre',pickAnimal:'Elige un animal',orPhoto:'…o usa tu propia foto',
@@ -2450,65 +2462,120 @@ var TX={
   imported:'Actualizado {n}: {p} pts',importSelf:'Ese jugador ya está en este teléfono.',importBad:'Ese código no funcionó.',
   language:'Idioma',hunt:'Búsqueda',players:'Jugadores en este teléfono',newPlayer:'➕ Nuevo jugador',changePic:'Cambiar mi imagen',resetAll:'Empezar un juego nuevo',resetConfirm:'Toca otra vez: se borrarán TODOS los puntajes y fotos',
   offline:'Funciona sin internet después de la primera carga. Agrégalo a tu pantalla de inicio para usarlo como app.',host:'Adulto que lleva el marcador',hostTip:'Lleva el marcador en tu teléfono: los niños tocan “Mi puntaje” y tú escaneas su código con la cámara. Abre esta página en el navegador (no desde un ícono de inicio) para que los códigos lleguen al mismo lugar.',
-  switchTo:'Toca para cambiar',storageFull:'El teléfono no tiene espacio, así que no se guardó la foto.',done:'Listo',back:'Atrás'
+  switchTo:'Toca para cambiar',storageFull:'El teléfono no tiene espacio, así que no se guardó la foto.',done:'Listo',back:'← Atrás',tabHome:'Inicio',createPlayer:'Crear un jugador',clearBoard:'Borrar el marcador',eraseAll:'Borrar todo (empezar de cero)',clearBoardMsg:'Esto quita a todos los jugadores escaneados y los puntos extra o quitados. Los jugadores creados en este teléfono conservan su avance.',eraseMsg:'Esto borra TODOS los jugadores, puntajes y fotos de este teléfono. No se puede deshacer.',yesDo:'Sí, hazlo',cancel:'Cancelar',cleared:'Todo limpio ✨',bdSetup:'Sorpresa de cumpleaños',bdHint:'Adultos: agreguen los nombres de los cumpleañeros para la búsqueda de Nueva York. Los niños encontrarán un grupo secreto de cumpleaños y una tarjeta sorpresa.',bdName1:'Nombre del cumpleañero',bdName2:'Segundo nombre (opcional)',bdSave:'Guardar',bdOff:'Quitar',bdPreview:'👀 Ver la tarjeta sorpresa',bdGroup:'🎂 Cumpleaños',bdCardTitle:'¡Feliz cumpleaños,',bdCardSub:'¡Nueva York te celebra! 🗽',bdFrom:'Con cariño de todo el equipo',bdStart:'¡A celebrar!',bdBonus:'🎂 ¡Bono de cumpleaños! +{n}',bdEdit:'Cambiar los nombres',bdAge:'Cumple (edad, opcional)',bdBannerOpt:'Mostrar el letrero de cumpleaños desde el inicio (sin sorpresa)',bdSet:'Agregar nombres de cumpleaños'
  }
 };
 var LANG=(function(){try{var l=localStorage.getItem('hunt2_lang');if(l)return l}catch(e){}return /^es/i.test(navigator.language||'')?'es':'en'})();
 function t(k,v){var s=(TX[LANG]&&TX[LANG][k])||TX.en[k]||k;if(v)for(var x in v)s=s.replace('{'+x+'}',v[x]);return s}
 
 /* ---------- missions ---------- */
-function P(id,pts,en,es){return {id:id,type:'photo',pts:pts,l:{en:{t:en[0],d:en[1]},es:{t:es[0],d:es[1]}}}}
-function RQ(id,pts,en,es,a){return {id:id,type:'riddle',pts:pts,l:{en:en,es:es},a:a}}
+function P(id,pts,g,en,es){return {id:id,type:'photo',pts:pts,g:g,l:{en:{t:en[0],d:en[1]},es:{t:es[0],d:es[1]}}}}
+function RQ(id,g,en,es,a){return {id:id,type:'riddle',pts:10,g:g,l:{en:en,es:es},a:a}}
+function RP(m,pts){m.pts=pts;return m}
+function RR(id,g,qe,oe,he,qs,os,hs,a){return RQ(id,g,{q:qe,o:oe,h:he},{q:qs,o:os,h:hs},a)}
+function BDM(pre,sEn,sEs){return [
+ P(pre+'1',20,'bd',['Birthday toast for {a}','Clink cups or desserts and cheer!'],['Brindis de cumpleaños para {a}','¡Choquen vasos o postres y griten hurra!']),
+ P(pre+'2',20,'bd',['Make a wish for {b}','A candle, a sparkler or twinkling lights'],['Pide un deseo por {b}','Una vela, una luz de bengala o luces brillantes']),
+ P(pre+'3',25,'bd',['Birthday dance in front of '+sEn,'Everyone dances for {n}'],['Baile de cumpleaños frente a '+sEs,'Todos bailan por {n}']),
+ P(pre+'4',15,'bd',['Birthday crowns!','Make a crown or hat from napkins, paper or anything you find'],['¡Coronas de cumpleaños!','Haz una corona o gorro con servilletas, papel o lo que encuentres']),
+ P(pre+'5',25,'bd',['The big Happy Birthday group photo','Everyone together, hands up, shout “Happy Birthday!”'],['La gran foto grupal de cumpleaños','Todos juntos con las manos arriba: ¡Feliz cumpleaños!']),
+ P(pre+'8',15,'bd',['A big smile for {a}','Everyone’s biggest smile or silliest face!'],['Una gran sonrisa para {a}','¡La sonrisa más grande o la cara más chistosa de todos!']),
+ RP(RR(pre+'6','bd','What do you blow out on a birthday cake?',['Candles','Light bulbs','Fireworks'],'Make a wish first!','¿Qué se sopla en un pastel de cumpleaños?',['Las velas','Las bombillas','Los fuegos artificiales'],'¡Pide un deseo primero!',0),15),
+ RP(RR(pre+'7','bd','What do people sing when it’s someone’s birthday?',['Happy Birthday to You','Jingle Bells','Row, Row, Row Your Boat'],'It’s the most famous song at a birthday party.','¿Qué se canta en un cumpleaños?',['Cumpleaños feliz','Campana sobre campana','Los pollitos dicen'],'Es la canción más famosa en las fiestas.',0),15)
+]}
 var RID=[
- RQ('r1',10,{q:'What has hands but can’t clap?',o:['A clock','A glove','A monkey'],h:'It tells you what time it is.'},{q:'Tiene agujas pero no sabe coser. ¿Qué es?',o:['Un reloj','Un sastre','Una almohada'],h:'Te dice la hora.'},0),
- RQ('r2',10,{q:'What goes up but never comes back down?',o:['A balloon','Your age','A kite'],h:'It gets bigger every birthday.'},{q:'¿Qué sube cada año pero nunca baja?',o:['Un globo','Tu edad','Una cometa'],h:'Crece en cada cumpleaños.'},1),
- RQ('r3',10,{q:'What has to be broken before you can use it?',o:['A promise','A window','An egg'],h:'Think breakfast!'},{q:'Hay que romperlo antes de usarlo. ¿Qué es?',o:['Una promesa','Una ventana','Un huevo'],h:'¡Piensa en el desayuno!'},2),
- RQ('r4',10,{q:'What can you catch but never throw?',o:['A cold','A ball','A fish'],h:'Achoo!'},{q:'Blanca por dentro, verde por fuera. Si quieres que te lo diga, espera.',o:['La pera','La lechuga','El pepino'],h:'Es una fruta.'},0),
- RQ('r5',10,{q:'What do you call a bear with no teeth?',o:['A grizzly bear','A gummy bear','A teddy bear'],h:'You might find it in a candy store.'},{q:'Oro parece, plata no es. Abre la cortina y verás lo que es.',o:['La luna','El plátano (banano)','El oro'],h:'Es amarillo y se come.'},1),
- RQ('r6',10,{q:'What has keys but can’t open any doors?',o:['A piano','A pirate','A mailbox'],h:'You can play music on it.'},{q:'Tiene teclas pero no abre puertas. ¿Qué es?',o:['Un piano','Un pirata','Un buzón'],h:'Con él se toca música.'},0)
+ RR('r1','fun','What has hands but can’t clap?',['A clock','A glove','A monkey'],'It tells you what time it is.','Tiene agujas pero no sabe coser. ¿Qué es?',['Un reloj','Un sastre','Una almohada'],'Te dice la hora.',0),
+ RR('r2','fun','What goes up but never comes back down?',['A balloon','Your age','A kite'],'It gets bigger every birthday.','¿Qué sube cada año pero nunca baja?',['Un globo','Tu edad','Una cometa'],'Crece en cada cumpleaños.',1),
+ RR('r3','fun','What has to be broken before you can use it?',['A promise','A window','An egg'],'Think breakfast!','Hay que romperlo antes de usarlo. ¿Qué es?',['Una promesa','Una ventana','Un huevo'],'¡Piensa en el desayuno!',2),
+ RR('r4','fun','What can you catch but never throw?',['A cold','A ball','A fish'],'Achoo!','Blanca por dentro, verde por fuera. Si quieres que te lo diga, espera.',['La pera','La lechuga','El pepino'],'Es una fruta.',0),
+ RR('r5','fun','What do you call a bear with no teeth?',['A grizzly bear','A gummy bear','A teddy bear'],'You might find it in a candy store.','Oro parece, plata no es. Abre la cortina y verás lo que es.',['La luna','El plátano (banano)','El oro'],'Es amarillo y se come.',1),
+ RR('r6','fun','What has keys but can’t open any doors?',['A piano','A pirate','A mailbox'],'You can play music on it.','Tiene teclas pero no abre puertas. ¿Qué es?',['Un piano','Un pirata','Un buzón'],'Con él se toca música.',0)
 ];
 var PACKS={
- park:{emoji:'🎢',name:{en:'Theme Park Day',es:'Día en el Parque'},missions:[].concat([
-  P('p1',15,['Family power pose','Everyone strikes a superhero pose'],['Pose de poder en familia','Todos hacen pose de superhéroe']),
-  P('p2',10,['Find a giant statue or sculpture','Pose just like it'],['Encuentra una estatua o escultura gigante','Haz la misma pose']),
-  P('p3',10,['A sign with your age on it','Any number sign counts'],['Un letrero con el número de tu edad','Cualquier número sirve']),
-  P('p4',10,['A food you have never tried','Snap it before you taste it!'],['Una comida que nunca has probado','¡Tómale foto antes de probarla!']),
-  P('p5',10,['Find a fountain or water splash','Water, water everywhere'],['Encuentra una fuente o chorros de agua','Agua por todos lados']),
-  P('p6',10,['The tallest thing you can see','Look way up!'],['Lo más alto que puedas ver','¡Mira hacia arriba!']),
-  P('p7',10,['Your shadow selfie','Make a funny shadow shape'],['Selfie de tu sombra','Haz una forma chistosa con tu sombra']),
-  P('p8',10,['Stand next to a “You must be this tall” sign','Are you tall enough?'],['Párate junto al letrero de estatura mínima','¿Eres lo bastante alto?']),
-  P('p9',5,['Something in your favorite color','Anything at all'],['Algo de tu color favorito','Lo que sea']),
-  P('p10',10,['Something that spins or goes around','No strangers’ faces, please'],['Algo que gire o dé vueltas','Sin caras de desconocidos, por favor']),
-  P('p11',15,['Team selfie with the silliest faces','Everyone in the picture'],['Selfie de equipo con las caras más chistosas','Que salgan todos']),
-  P('p12',5,['A park map: find where you are','Point to the “You are here” spot'],['Un mapa del parque: encuentra dónde estás','Señala el punto “Usted está aquí”'])
- ],RID,[
-  RQ('t1',10,{q:'Which of these do you ALWAYS need to ride a roller coaster?',o:['A swimsuit','To follow the safety rules','A hat'],h:'It keeps everyone safe.'},{q:'¿Qué necesitas SIEMPRE para subirte a una montaña rusa?',o:['Un traje de baño','Seguir las reglas de seguridad','Un sombrero'],h:'Mantiene a todos seguros.'},1),
-  RQ('t2',10,{q:'A ride goes round and round. What shape is its path?',o:['A circle','A triangle','A square'],h:'Think of a wheel.'},{q:'Una atracción gira y gira. ¿Qué forma tiene su camino?',o:['Un círculo','Un triángulo','Un cuadrado'],h:'Piensa en una rueda.'},0)
- ])},
- nyc:{emoji:'🗽',name:{en:'New York City',es:'Nueva York'},missions:[].concat([
-  P('n1',10,['Spot a yellow taxi','Stay on the sidewalk!'],['Encuentra un taxi amarillo','¡Quédate en la acera!']),
-  P('n2',10,['A subway sign or station entrance','Look for the circles with letters or numbers'],['Un letrero o entrada del metro','Busca los círculos con letras o números']),
-  P('n3',10,['A street food cart','Pretzels? Hot dogs? No strangers’ faces'],['Un carrito de comida callejera','¿Pretzels? ¿Perros calientes? Sin caras de desconocidos']),
-  P('n4',10,['Look UP: a super tall building','Get the whole top in the picture'],['Mira ARRIBA: un edificio altísimo','Que se vea toda la punta']),
-  P('n5',10,['A fire escape','Zig-zag metal stairs on a building'],['Una escalera de incendios','Escaleras de metal en zigzag en un edificio']),
-  P('n6',10,['A statue in a park','Pose like it'],['Una estatua en un parque','Haz la misma pose']),
-  P('n7',5,['A pigeon!','Zoom, don’t chase'],['¡Una paloma!','Usa el zoom, no las persigas']),
-  P('n8',10,['A street sign with a number on it','Streets and avenues have numbers'],['Un letrero de calle con un número','Las calles y avenidas tienen números']),
-  P('n9',5,['A “Walk / Don’t Walk” signal','Cross safely with a grown-up'],['Un semáforo peatonal','Cruza con un adulto']),
-  P('n10',10,['A bridge or a view of the water','Wave hello to the river'],['Un puente o una vista del agua','Saluda al río']),
-  P('n11',15,['Team selfie with a famous landmark','Everyone squeeze in'],['Selfie de equipo con un lugar famoso','¡Todos juntos!']),
-  P('n12',15,['Something that sparkles with holiday lights','Trees, windows, storefronts…'],['Algo que brille con luces navideñas','Árboles, ventanas, vitrinas…'])
- ],RID,[
-  RQ('q1',10,{q:'What is New York City’s famous nickname?',o:['The Big Apple','The Big Orange','The Big Pizza'],h:'It’s a fruit!'},{q:'¿Cuál es el famoso apodo de Nueva York?',o:['La Gran Manzana','La Gran Naranja','La Gran Pizza'],h:'¡Es una fruta!'},0),
-  RQ('q2',10,{q:'The Statue of Liberty is made of copper. What color did it turn over many years?',o:['Pink','Green','Purple'],h:'Think of a grassy field.'},{q:'La Estatua de la Libertad es de cobre. ¿De qué color se puso con los años?',o:['Rosa','Verde','Morado'],h:'Piensa en el pasto.'},1),
-  RQ('q3',10,{q:'Which famous ball drops in Times Square on New Year’s Eve?',o:['A soccer ball','A giant crystal ball','A basketball'],h:'It sparkles!'},{q:'¿Qué famosa bola cae en Times Square en Nochevieja?',o:['Una pelota de fútbol','Una bola de cristal gigante','Una pelota de baloncesto'],h:'¡Brilla mucho!'},1),
-  RQ('q4',10,{q:'About how many floors does the Empire State Building have?',o:['12','102','1,002'],h:'A little more than a hundred.'},{q:'¿Cuántos pisos tiene más o menos el Empire State?',o:['12','102','1.002'],h:'Un poco más de cien.'},1),
-  RQ('q5',10,{q:'What does the Brooklyn Bridge connect Manhattan to?',o:['Queens','Brooklyn','Florida'],h:'It’s in the name!'},{q:'¿Con qué parte de la ciudad conecta el Puente de Brooklyn a Manhattan?',o:['Queens','Brooklyn','Florida'],h:'¡Está en el nombre!'},1)
- ])}
+ park:{emoji:'🎢',name:{en:'Universal Orlando',es:'Universal Orlando'},
+  groups:[{k:'d1',en:'Day 1: Studios + Islands',es:'Día 1: Studios + Islands'},{k:'d2',en:'Day 2: Epic Universe',es:'Día 2: Epic Universe'},{k:'any',en:'Anywhere',es:'En cualquier lugar'},{k:'fun',en:'Brain teasers',es:'Acertijos'}],
+  missions:[].concat([
+  P('u1',10,'d1',['The silliest, curviest, most colorful thing','Pose just like it (wonky is perfect)'],['Lo más chistoso, curvo y colorido','Haz la misma pose (¡lo torcido vale!)']),
+  P('u2',10,'d1',['A dinosaur! Roar next to it','Look for the giant prehistoric creatures'],['¡Un dinosaurio! Ruge a su lado','Busca las criaturas prehistóricas gigantes']),
+  P('u3',10,'d1',['Superhero landing pose','One knee down, one fist on the ground'],['Aterrizaje de superhéroe','Una rodilla abajo y un puño al suelo']),
+  P('u4',10,'d1',['Splashes! A photo of water flying','Stay dry: shoot from a safe spot'],['¡Salpicaduras! Una foto de agua volando','Mantente seco: dispara desde un lugar seguro']),
+  P('u5',10,'d1',['A roof covered in “snow”','Look for the cozy village rooftops'],['Un techo cubierto de “nieve”','Busca los techos del pueblito']),
+  P('u6',15,'d1',['Find a giant dragon way up high','Look UP! Get the whole dragon in the photo'],['Encuentra un dragón gigante allá arriba','¡Mira ARRIBA! Que salga todo el dragón']),
+  P('u7',10,'d1',['Movie-star pose on a “movie set” street','Big sunglasses face or red carpet walk'],['Pose de estrella de cine en una calle de “película”','Cara de gafas oscuras o paso de alfombra roja']),
+  P('u8',15,'d1',['Team selfie at the park entrance','Everyone in the picture'],['Selfie de equipo en la entrada del parque','Que salgan todos']),
+  P('e1',15,'d2',['Team selfie at the Epic Universe entrance','Big smiles!'],['Selfie de equipo en la entrada de Epic Universe','¡Sonrisas grandes!']),
+  P('e2',10,'d2',['Something that looks like a star or a planet','Celestial Park is full of them'],['Algo que parezca una estrella o un planeta','Celestial Park está lleno de ellos']),
+  P('e3',10,'d2',['A garden, a fountain or a water show','Look around the big central park'],['Un jardín, una fuente o un juego de agua','Mira alrededor del gran parque central']),
+  P('e4',10,'d2',['A giant mushroom or a “?” block','Power-up pose included!'],['Un hongo gigante o un bloque “?”','¡Con pose de power-up!']),
+  P('e5',15,'d2',['Dragon-trainer pose next to a dragon','Hold out your hand like you’re making a friend'],['Pose de entrenador de dragones junto a un dragón','Extiende la mano como si hicieras un amigo']),
+  P('e6',10,'d2',['A Viking-style wooden building','Look for rough logs and rope'],['Un edificio de madera estilo vikingo','Busca troncos y cuerdas']),
+  P('e7',10,'d2',['Tourist pose on a Paris-style street','Look for old-fashioned lamps and cafés'],['Pose de turista en una calle estilo París','Busca faroles antiguos y cafés']),
+  P('e8',10,'d2',['The tallest thing you can see in Epic Universe','Look way up!'],['Lo más alto que veas en Epic Universe','¡Mira hacia arriba!']),
+  P('a1',15,'any',['Family power pose','Everyone strikes a superhero pose'],['Pose de poder en familia','Todos hacen pose de superhéroe']),
+  P('a2',10,'any',['A sign with your age on it','Any number sign counts'],['Un letrero con el número de tu edad','Cualquier número sirve']),
+  P('a3',10,'any',['A food you have never tried','Snap it before you taste it!'],['Una comida que nunca has probado','¡Tómale foto antes de probarla!']),
+  P('a4',10,'any',['Your shadow selfie','Make a funny shadow shape'],['Selfie de tu sombra','Haz una forma chistosa con tu sombra']),
+  P('a5',5,'any',['Something in your favorite color','Anything at all'],['Algo de tu color favorito','Lo que sea']),
+  P('a6',10,'any',['Stand next to a “You must be this tall” sign','Are you tall enough?'],['Párate junto al letrero de estatura mínima','¿Eres lo bastante alto?']),
+  P('a7',5,'any',['A park map: find where you are','Point to the “You are here” spot'],['Un mapa del parque: encuentra dónde estás','Señala el punto “Usted está aquí”'])
+ ],[
+  RR('k1','d1','Which of these is a real dinosaur?',['Tyrannosaurus rex','Bigfoot','A unicorn'],'It had tiny arms and a giant bite.','¿Cuál de estos es un dinosaurio de verdad?',['Tiranosaurio rex','Pie Grande','Un unicornio'],'Tenía bracitos chiquitos y una mordida enorme.',0),
+  RR('k2','d1','What do wizards in the stories fly on in their big sport?',['Broomsticks','Skateboards','Giant kites'],'Cleaning tools that can fly!','¿En qué vuelan los magos de los cuentos en su gran deporte?',['Escobas','Patinetas','Cometas gigantes'],'¡Herramientas de limpieza que vuelan!',0),
+  RR('k3','d2','I shine at night and change shape from a thin curve to a big circle. What am I?',['The Moon','A lamp','A snowman'],'Look up when it gets dark.','Brillo de noche y cambio de forma, de una curva delgada a un círculo grande. ¿Qué soy?',['La Luna','Una lámpara','Un muñeco de nieve'],'Mira al cielo cuando oscurece.',0),
+  RR('k4','d2','What do dragons in stories usually breathe out?',['Fire','Bubbles','Glitter'],'It’s hot!','¿Qué suelen echar por la boca los dragones de los cuentos?',['Fuego','Burbujas','Brillantina'],'¡Es caliente!',0),
+  RR('t1','fun','Which of these do you ALWAYS need to ride a roller coaster?',['A swimsuit','To follow the safety rules','A hat'],'It keeps everyone safe.','¿Qué necesitas SIEMPRE para subirte a una montaña rusa?',['Un traje de baño','Seguir las reglas de seguridad','Un sombrero'],'Mantiene a todos seguros.',1),
+  RR('t2','fun','A ride goes round and round. What shape is its path?',['A circle','A triangle','A square'],'Think of a wheel.','Una atracción gira y gira. ¿Qué forma tiene su camino?',['Un círculo','Un triángulo','Un cuadrado'],'Piensa en una rueda.',0)
+ ],BDM('ub','a big park landmark','un lugar emblemático del parque'),RID)},
+ nyc:{emoji:'🗽',name:{en:'New York City',es:'Nueva York'},
+  groups:[{k:'mid',en:'Midtown',es:'Midtown'},{k:'harb',en:'Harbor + Downtown',es:'Puerto + Bajo Manhattan'},{k:'hol',en:'Holiday + Parks',es:'Navidad + Parques'},{k:'eat',en:'Eats + Shops',es:'Comida + Tiendas'},{k:'go',en:'Getting Around',es:'Moverse'},{k:'fun',en:'Brain teasers',es:'Acertijos'}],
+  missions:[].concat([
+  P('y1',15,'mid',['Team selfie in Times Square','Glowing screens everywhere!'],['Selfie de equipo en Times Square','¡Pantallas brillantes por todos lados!']),
+  P('y2',10,'mid',['The big Radio City sign','Before the Rockettes kick off'],['El gran letrero de Radio City','Antes de que empiecen las Rockettes']),
+  P('y3',10,'mid',['Look UP at the tallest building around','Get the top in the picture'],['Mira ARRIBA al edificio más alto','Que salga la punta']),
+  P('y4',15,'mid',['Grand Central: the starry ceiling','Look UP at the painted stars'],['Grand Central: el techo lleno de estrellas','Mira ARRIBA a las estrellas pintadas']),
+  P('y5',15,'harb',['Pose like the Statue of Liberty','One arm up, holding your “torch”'],['Pose de Estatua de la Libertad','Un brazo arriba con tu “antorcha”']),
+  P('y6',10,'harb',['The ferry ride: the skyline through the window','Wave at the water'],['El paseo en ferry: el horizonte por la ventana','Saluda al agua']),
+  P('y7',10,'harb',['Ellis Island: where families first arrived','Take a picture of the main building'],['Ellis Island: donde llegaron muchas familias','Toma una foto del edificio principal']),
+  P('y8',10,'harb',['Chinatown: a red lantern or dragon decoration','Bright red is easy to spot'],['Chinatown: un farol rojo o un dragón decorativo','El rojo brillante es fácil de ver']),
+  P('y9',15,'hol',['The big Rockefeller Christmas tree','Team selfie with the tree'],['El gran árbol de Navidad de Rockefeller','Selfie de equipo con el árbol']),
+  P('y10',10,'hol',['Bryant Park Winter Village','A holiday stall or the ice rink'],['Bryant Park Winter Village','Un puesto navideño o la pista de hielo']),
+  P('y11',10,'hol',['Your favorite 5th Avenue holiday window','Pick the best one'],['Tu vitrina navideña favorita de la Quinta Avenida','Elige la mejor']),
+  P('y12',10,'hol',['Central Park: a bridge, a big rock or a carriage horse','Photo of the horse only, no faces'],['Central Park: un puente, una roca grande o un caballo de carruaje','Solo el caballo, sin caras']),
+  P('y13',10,'hol',['Ice skating: your skates on the ice','Hold the wall if you need to!'],['Patinaje: tus patines sobre el hielo','¡Agárrate de la barandilla si hace falta!']),
+  P('y14',10,'eat',['A big slice of New York pizza','Fold it like a real New Yorker'],['Una rebanada grande de pizza de Nueva York','Dóblala como un neoyorquino']),
+  P('y15',15,'eat',['Frozen hot chocolate at Serendipity','Photo before the first sip!'],['Chocolate caliente helado en Serendipity','¡Foto antes del primer sorbo!']),
+  P('y16',10,'eat',['The M&M’s store: a wall of colorful candy','Count the colors!'],['La tienda de M&M’s: una pared de dulces de colores','¡Cuenta los colores!']),
+  P('y17',10,'eat',['A giant toy at FAO Schwarz','Find the biggest one'],['Un juguete gigante en FAO Schwarz','Encuentra el más grande']),
+  P('y18',10,'eat',['A big LEGO model or a Nintendo display','Pose next to it'],['Un modelo grande de LEGO o una exhibición de Nintendo','Pósate junto a él']),
+  P('y19',10,'go',['A subway sign or station entrance','Look for the circles with letters or numbers'],['Un letrero o entrada del metro','Busca los círculos con letras o números']),
+  P('y20',10,'go',['Spot a yellow taxi','Stay on the sidewalk!'],['Encuentra un taxi amarillo','¡Quédate en la acera!']),
+  P('y21',15,'go',['Roosevelt Island Tram: the skyline from the window','Hold on tight and look out'],['Tranvía de Roosevelt Island: el horizonte desde la ventana','Agárrate fuerte y mira afuera']),
+  P('y22',15,'go',['Summit: the city lights from way up high','The whole city sparkles'],['Summit: las luces de la ciudad desde las alturas','Toda la ciudad brilla']),
+  P('y23',5,'go',['A pigeon!','Zoom, don’t chase'],['¡Una paloma!','Usa el zoom, no las persigas'])
+ ],[
+  RR('q1','fun','What is New York City’s famous nickname?',['The Big Apple','The Big Orange','The Big Pizza'],'It’s a fruit!','¿Cuál es el famoso apodo de Nueva York?',['La Gran Manzana','La Gran Naranja','La Gran Pizza'],'¡Es una fruta!',0),
+  RR('q2','harb','The Statue of Liberty is made of copper. What color did it turn over many years?',['Pink','Green','Purple'],'Think of a grassy field.','La Estatua de la Libertad es de cobre. ¿De qué color se puso con los años?',['Rosa','Verde','Morado'],'Piensa en el pasto.',1),
+  RR('q3','mid','Which famous ball drops in Times Square on New Year’s Eve?',['A soccer ball','A giant crystal ball','A basketball'],'It sparkles!','¿Qué famosa bola cae en Times Square en Nochevieja?',['Una pelota de fútbol','Una bola de cristal gigante','Una pelota de baloncesto'],'¡Brilla mucho!',1),
+  RR('q4','mid','About how many floors does the Empire State Building have?',['12','102','1,002'],'A little more than a hundred.','¿Cuántos pisos tiene más o menos el Empire State?',['12','102','1.002'],'Un poco más de cien.',1),
+  RR('q5','harb','What does the Brooklyn Bridge connect Manhattan to?',['Queens','Brooklyn','Florida'],'It’s in the name!','¿Con qué parte de la ciudad conecta el Puente de Brooklyn a Manhattan?',['Queens','Brooklyn','Florida'],'¡Está en el nombre!',1),
+  RR('q6','mid','What do the Rockettes famously do all together in a long line?',['High kicks','Backflips','Cooking'],'Lift your leg way up!','¿Qué hacen famosamente las Rockettes todas juntas en una fila?',['Patadas altas','Volteretas','Cocinar'],'¡Levanta la pierna bien alto!',0),
+  RR('q7','hol','What sparkles all over the big tree at Rockefeller Center?',['Strings of lights','Pizza slices','Snowmen'],'Plug them in!','¿Qué brilla por todo el gran árbol de Rockefeller Center?',['Tiras de luces','Rebanadas de pizza','Muñecos de nieve'],'¡Se enchufan!',0),
+  RR('q8','harb','How do people usually get to the Statue of Liberty?',['By ferry','By hot-air balloon','By skateboard'],'A boat that carries lots of people.','¿Cómo se llega normalmente a la Estatua de la Libertad?',['En ferry','En globo aerostático','En patineta'],'Un barco que lleva a mucha gente.',0),
+  RR('q9','mid','What is painted on the ceiling of Grand Central?',['Stars and constellations','Ice cream cones','Cartoon dinosaurs'],'Look up at the night sky.','¿Qué está pintado en el techo de Grand Central?',['Estrellas y constelaciones','Helados de cono','Dinosaurios de caricatura'],'Mira al cielo de noche.',0),
+  RR('q10','go','The Roosevelt Island Tram travels…',['On cables high above the river','Under the water','On roller skates'],'Look up from the ground and you can see it.','El tranvía de Roosevelt Island viaja…',['Colgado de cables sobre el río','Bajo el agua','En patines'],'Desde el suelo lo ves arriba.',0)
+ ],BDM('bd','a big New York sight','un lugar famoso de Nueva York'),RID)}
 };
 function findMission(id){for(var k in PACKS){var m=PACKS[k].missions.filter(function(x){return x.id===id})[0];if(m)return m}return null}
-function mtext(m){return m.l[LANG]||m.l.en}
-function mtitle(m){return m.type==='riddle'?t('riddleTitle')+' #'+(m.id.replace(/\D/g,'')):mtext(m).t}
+function bdc(){return (D.bdays&&D.bdays[curKey()])||null}
+function bdNames(){var b=bdc()||{};return b.b?b.a+' & '+b.b:(b.a||'')}
+function bn(x){var b=bdc()||{},a=b.a||'🎂',c=b.b||a;return String(x).replace(/\{a\}/g,a).replace(/\{b\}/g,c).replace(/\{n\}/g,bdNames()||'🎂')}
+function mtext(m){var x=m.l[LANG]||m.l.en;return {t:bn(x.t||''),d:bn(x.d||'')}}
+function curKey(){var p=me();return (p&&p.pack)||D.pack}
+function bdActive(){var b=bdc();return !!(b&&b.a)}
+function ordEn(n){var v=n%100,x=['th','st','nd','rd'];return n+(x[(v-20)%10]||x[v]||x[0])}
+function bdTitle(){var b=bdc()||{},n=bdNames(),a=parseInt(b.age,10);if(LANG==='es')return a===1?'¡Feliz primer cumpleaños, '+n+'!':(a>1?'¡Feliz cumpleaños número '+a+', '+n+'!':'¡Feliz cumpleaños, '+n+'!');return a>=1?'Happy '+ordEn(a)+' Birthday, '+n+'!':'Happy Birthday, '+n+'!'}
+function bdBanner(){if(!bdActive())return '';var b=bdc();if(!(b.banner||D.seen[curKey()]))return '';return '<div class="bdbanner" data-act="showCard">🎈 '+esc(bdTitle())+' 🎈</div>'}
+function mtitle(m){return m.type==='riddle'?t('riddleTitle')+(m.g==='bd'?' 🎂':' #'+m.id.replace(/\D/g,'')):mtext(m).t}
 function mdesc(m){return m.type==='riddle'?t('solve'):mtext(m).d}
 
 /* ---------- storage ---------- */
@@ -2518,11 +2585,13 @@ var KEY='hunt2',PKEY='hunt2_ph';
 var D={pack:'park',me:'',profiles:{},imported:{},meta:{}};
 var PH={};
 (function(){try{var r=localStorage.getItem(KEY);if(r)D=Object.assign(D,JSON.parse(r))}catch(e){}try{var p=localStorage.getItem(PKEY);if(p)PH=JSON.parse(p)}catch(e){}})();
+if(D.bday&&!D.bdays){D.bdays={nyc:D.bday};delete D.bday}
+D.bdays=D.bdays||{};D.seen=D.seen||{};
 function save(){try{localStorage.setItem(KEY,JSON.stringify(D));return true}catch(e){return false}}
 function savePh(){try{localStorage.setItem(PKEY,JSON.stringify(PH));return true}catch(e){return false}}
 function setLang(l){LANG=l;try{localStorage.setItem('hunt2_lang',l)}catch(e){}document.documentElement.lang=l;document.title=t('title')}
 
-var S={tab:'missions',filter:'all',screen:'',avatar:AVATARS[0],avPhoto:'',draft:'',skip:false,rm:null,riddle:null,pending:null,detail:null,reset:false,newPack:'park'};
+var S={tab:'missions',filter:'all',group:'all',screen:'',avatar:AVATARS[0],avPhoto:'',draft:'',skip:false,rm:null,riddle:null,pending:null,detail:null,reset:false,newPack:'park',prevMe:'',ask:''};
 
 /* ---------- scoring ---------- */
 function entries(){
@@ -2546,7 +2615,7 @@ function render(){
  if(ae&&ae.tagName==='INPUT'&&a.contains(ae))return;
  if(!me()&&!S.skip){a.innerHTML=setup();return}
  if(!me()&&S.tab==='missions')S.tab='board';
- var head=me()?headHtml():'<div class="top"><div class="me"><span class="av">🏆</span><span><div class="nm">'+esc(t('host'))+'</div></span></div></div>';
+ var head=me()?headHtml():'<div class="top"><div class="me"><span class="av">🏆</span><span style="min-width:0"><div class="nm">'+esc(t('host'))+'</div></span></div><button class="btn sm" data-act="newPlayer" style="white-space:nowrap">➕ '+esc(t('createPlayer'))+'</button></div>';
  var body=S.tab==='missions'?missions():S.tab==='share'?share():S.tab==='board'?board():settings();
  a.innerHTML=head+body+nav();
 }
@@ -2555,27 +2624,30 @@ function setup(){
  var prev='<div class="preview"><div class="av">'+(S.avPhoto?'<img class="avimg" alt="" src="'+esc(S.avPhoto)+'">':esc(S.avatar))+'</div><div class="muted">'+esc(t('pickAnimal'))+' '+esc(t('orPhoto'))+'</div></div>';
  var pk=Object.keys(PACKS).map(function(k){return '<button data-act="newpack" data-k="'+k+'" class="'+(S.newPack===k?'on':'')+'">'+PACKS[k].emoji+'<br>'+esc(PACKS[k].name[LANG])+'</button>'}).join('');
  var skip=Object.keys(D.profiles).length||Object.keys(D.imported).length?'':'';
- return langs()+'<div style="padding:8px 0 20px"><h1>'+esc(t('setupTitle'))+'</h1><p class="muted">'+esc(t('setupSub'))+'</p><input id="nm" type="text" maxlength="14" placeholder="'+esc(t('namePh'))+'" value="'+esc(S.draft)+'" autocomplete="off">'+prev+'<div class="avs">'+av+'</div><div class="row2"><button class="btn alt sm" data-act="selfie">'+esc(t('selfie'))+'</button><button class="btn alt sm" data-act="lib">'+esc(t('choosePhoto'))+'</button></div><div class="sec">'+esc(t('whichHunt'))+'</div><div class="pk">'+pk+'</div><button class="btn" data-act="create">'+esc(t('go'))+'</button><button class="btn alt" data-act="skip">'+esc(t('keepScore'))+'</button></div>';
+ return langs()+'<div style="padding:8px 0 20px"><h1>'+esc(t('setupTitle'))+'</h1><p class="muted">'+esc(t('setupSub'))+'</p><input id="nm" type="text" maxlength="14" placeholder="'+esc(t('namePh'))+'" value="'+esc(S.draft)+'" autocomplete="off">'+prev+'<div class="avs">'+av+'</div><div class="row2"><button class="btn alt sm" data-act="selfie">'+esc(t('selfie'))+'</button><button class="btn alt sm" data-act="lib">'+esc(t('choosePhoto'))+'</button></div><div class="sec">'+esc(t('whichHunt'))+'</div><div class="pk">'+pk+'</div><button class="btn" data-act="create">'+esc(t('go'))+'</button><button class="btn alt" data-act="skip">'+esc((S.prevMe||Object.keys(D.profiles).length||Object.keys(D.imported).length)?t('back'):t('keepScore'))+'</button></div>';
 }
 function headHtml(){
  var p=me(),e={id:D.me,name:p.name,emoji:p.emoji,photo:p.photo,done:{}};for(var k in p.done||{})e.done[k]=p.done[k].pts;
  var pk=PACKS[p.pack||D.pack]||PACKS.park;
- return '<div class="top"><button class="me" data-act="tab" data-t="settings"><span class="av">'+avHtml(e)+'</span><span style="min-width:0"><div class="nm">'+esc(p.name)+'</div><div class="sub">'+pk.emoji+' '+esc(pk.name[LANG])+'</div></span></button><div class="score"><small>'+esc(t('points'))+'</small>'+entScore(e)+'</div></div>';
+ return '<div class="top"><button class="me" data-act="tab" data-t="settings"><span class="av">'+avHtml(e)+'</span><span style="min-width:0"><div class="nm">'+esc(p.name)+'</div><div class="sub">'+pk.emoji+' '+esc(pk.name[LANG])+'</div></span></button><div class="score" data-act="egg"><small>'+esc(t('points'))+'</small>'+entScore(e)+'</div></div>';
 }
 function nav(){
  function b(k,i,l){return '<button data-act="tab" data-t="'+k+'" class="'+(S.tab===k?'on':'')+'"><span>'+i+'</span>'+esc(t(l))+'</button>'}
- return '<nav><div class="in">'+(me()?b('missions','🧭','tabMissions')+b('share','📱','tabShare'):'')+b('board','🏆','tabBoard')+b('settings','⚙️','tabSettings')+'</div></nav>';
+ return '<nav><div class="in">'+(me()?b('missions','🧭','tabMissions')+b('share','📱','tabShare'):'<button data-act="newPlayer"><span>🏠</span>'+esc(t('tabHome'))+'</button>')+b('board','🏆','tabBoard')+b('settings','⚙️','tabSettings')+'</div></nav>';
 }
 function curPack(){var p=me();return PACKS[(p&&p.pack)||D.pack]||PACKS.park}
 function missions(){
- var p=me(),list=curPack().missions,d=p.done||{},n=list.filter(function(m){return d[m.id]}).length,f=S.filter;
+ var p=me(),list=curPack().missions.filter(function(m){return m.g!=='bd'||bdActive()}),d=p.done||{},n=list.filter(function(m){return d[m.id]}).length,f=S.filter;
  var chips=[['all','fAll'],['photo','fPhoto'],['riddle','fRiddle']].map(function(c){return '<button class="chip '+(f===c[0]?'on':'')+'" data-act="filter" data-f="'+c[0]+'">'+esc(t(c[1]))+'</button>'}).join('');
- var cards=list.filter(function(m){return f==='all'||m.type===f}).map(function(m){
+ var gs=(curPack().groups||[]).slice();if(bdActive())gs.unshift({k:'bd',en:t('bdGroup'),es:t('bdGroup')});
+ chips='<div class="chips">'+chips+'</div>';
+ if(gs.length){chips='<div class="chips" style="margin-bottom:0"><button class="chip '+(S.group==='all'?'on':'')+'" data-act="group" data-g="all">'+esc(t('fAll'))+'</button>'+gs.map(function(g){return '<button class="chip '+(S.group===g.k?'on':'')+'" data-act="group" data-g="'+g.k+'">'+esc(g[LANG]||g.en)+'</button>'}).join('')+'</div>'+chips}
+ var cards=list.filter(function(m){return (f==='all'||m.type===f)&&(S.group==='all'||m.g===S.group)}).map(function(m){
   var st=d[m.id],ph=PH[D.me+'_'+m.id];
-  var ic=ph?'<img alt="" src="'+esc(ph)+'">':(m.type==='photo'?'📸':'🧩');
+  var ic=ph?'<img alt="" src="'+esc(ph)+'">':(m.g==='bd'?'🎂':m.type==='photo'?'📸':'🧩');
   return '<button class="card '+m.type+(st?' done':'')+'" data-act="mission" data-id="'+m.id+'"'+(st?' disabled':'')+'><span class="ic">'+ic+'</span><span><div class="t">'+esc(mtitle(m))+'</div><div class="d">'+esc(mdesc(m))+'</div></span><span class="pts">'+(st?'✅ +'+st.pts:m.pts)+'</span></button>';
  }).join('');
- return '<div class="muted" style="margin-top:4px">'+esc(t('mDone',{n:n,t:list.length}))+'</div><div class="prog"><i style="width:'+Math.round(n/list.length*100)+'%"></i></div><div class="chips">'+chips+'</div>'+cards+'<div class="tip">'+esc(t('safety'))+'</div>';
+ return bdBanner()+'<div class="muted" style="margin-top:4px">'+esc(t('mDone',{n:n,t:list.length}))+'</div><div class="prog"><i style="width:'+Math.round(n/list.length*100)+'%"></i></div>'+chips+cards+'<div class="tip">'+esc(t('safety'))+'</div>';
 }
 function payload(){
  var p=me(),d=[];for(var k in p.done||{})d.push([k,p.done[k].pts]);
@@ -2601,7 +2673,7 @@ function board(){
  var rows=ranked();
  if(!rows.length)return '<div class="center"><div class="big">🏆</div><p>'+esc(t('boardEmpty'))+'</p></div>';
  var top=Math.max(rows[0].s,1),medal=['🥇','🥈','🥉'];
- return '<h2 style="margin:10px 0">'+esc(t('boardTitle'))+'</h2>'+rows.map(function(r,i){
+ return bdBanner()+'<h2 style="margin:10px 0">'+esc(t('boardTitle'))+'</h2>'+rows.map(function(r,i){
   return '<button class="lb '+(i===0&&r.s>0?'first ':'')+(r.id===D.me?'mine':'')+'" data-act="detail" data-id="'+esc(r.id)+'"><div class="rk">'+(medal[i]||(i+1))+'</div><div class="av">'+avHtml(r)+'</div><div class="who"><b>'+esc(r.name)+'</b><small>'+esc(t('nMissions',{n:entCount(r)}))+'</small><div class="bar"><i style="width:'+Math.round(r.s/top*100)+'%"></i></div></div><div class="sc">'+r.s+'</div></button>';
  }).join('');
 }
@@ -2611,7 +2683,7 @@ function settings(){
  return '<div class="sec">'+esc(t('language'))+'</div><div class="row2"><button class="btn alt sm '+(LANG==='en'?'on':'')+'" data-act="lang" data-l="en">English</button><button class="btn alt sm '+(LANG==='es'?'on':'')+'" data-act="lang" data-l="es">Español</button></div>'+
   (me()?'<div class="sec">'+esc(t('hunt'))+'</div><div class="pk">'+pk+'</div>':'')+
   '<div class="sec">'+esc(t('players'))+'</div>'+pl+'<button class="btn alt" data-act="newPlayer">'+esc(t('newPlayer'))+'</button>'+(me()?'<button class="btn alt" data-act="changePic">'+esc(t('changePic'))+'</button>':'')+
-  '<div class="sec">'+esc(t('host'))+'</div><p class="muted">'+esc(t('hostTip'))+'</p><p class="muted">'+esc(t('offline'))+'</p><button class="btn alt red" data-act="reset" style="color:#e5484d">'+esc(S.reset?t('resetConfirm'):t('resetAll'))+'</button>';
+  '<div class="sec">🎂 '+esc(t('bdSetup'))+' · '+esc(curPack().name[LANG])+'</div><p class="muted">'+esc(t('bdHint'))+'</p><button class="btn alt" data-act="bdOpen">'+esc(bdActive()?t('bdEdit')+': '+bdNames():t('bdSet'))+'</button>'+(bdActive()?'<button class="btn alt" data-act="showCard">'+esc(t('bdPreview'))+'</button>':'')+'<div class="sec">'+esc(t('host'))+'</div><p class="muted">'+esc(t('hostTip'))+'</p><p class="muted">'+esc(t('offline'))+'</p><button class="btn alt" data-act="ask" data-k="board">'+esc(t('clearBoard'))+'</button><button class="btn alt" data-act="ask" data-k="all" style="color:#e5484d;border-color:#f3a9a9">'+esc(t('eraseAll'))+'</button>';
 }
 
 /* ---------- modal ---------- */
@@ -2640,21 +2712,29 @@ var A={
  newpack:function(d){keepDraft();S.newPack=d.k;render()},
  selfie:function(){keepDraft();S.target='avatar';var f=$('#fSel');f.value='';f.click()},
  lib:function(){keepDraft();S.target='avatar';var f=$('#fLib');f.value='';f.click()},
- skip:function(){S.skip=true;S.tab='board';render()},
+ skip:function(){if(S.prevMe&&D.profiles[S.prevMe]){D.me=S.prevMe;S.tab='missions'}else{S.skip=true;S.tab='board'}S.prevMe='';render()},
  create:function(){
   var name=(($('#nm')||{}).value||'').trim().slice(0,14);if(!name){toast(t('needName'));return}
   unfocus();
   var id='p'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
   D.profiles[id]={name:name,emoji:S.avatar,photo:S.avPhoto||'',pack:S.newPack,done:{}};D.me=id;D.pack=S.newPack;
-  S.draft='';S.avPhoto='';S.screen='';S.skip=false;S.tab='missions';save();render();
+  S.draft='';S.avPhoto='';S.screen='';S.skip=false;S.prevMe='';S.tab='missions';save();render();
  },
- newPlayer:function(){D.me='';S.skip=false;S.draft='';S.avPhoto='';S.avatar=AVATARS[0];S.newPack=D.pack;render()},
+ newPlayer:function(){if(D.me)S.prevMe=D.me;D.me='';S.skip=false;S.draft='';S.avPhoto='';S.avatar=AVATARS[0];S.newPack=D.pack;render()},
  pick:function(d){D.me=d.id;save();S.tab='missions';render()},
  tab:function(d){S.tab=d.t;S.reset=false;render();window.scrollTo(0,0)},
  filter:function(d){S.filter=d.f;render()},
- pack:function(d){var p=me();if(p){p.pack=d.k}D.pack=d.k;save();render()},
+ group:function(d){S.group=d.g;if(d.g==='bd'&&bdActive()&&!D.seen[curKey()]){D.seen[curKey()]=1;save();showCard()}render()},
+ egg:function(){var n=Date.now();S.eggs=(S.eggs||[]).filter(function(x){return n-x<2500});S.eggs.push(n);if(S.eggs.length>=5){S.eggs=[];if(bdActive())showCard();else toast('🥚')}},
+ showCard:function(){showCard()},
+ cardClose:function(){var c=$('#card');c.className='';c.innerHTML=''},
+ bdOpen:function(){var b=bdc()||{};openModal('<h2>🎂 '+esc(t('bdSetup'))+' · '+esc(curPack().name[LANG])+'</h2><p class="muted">'+esc(t('bdHint'))+'</p><input id="b1" type="text" maxlength="14" placeholder="'+esc(t('bdName1'))+'" value="'+esc(b.a||'')+'" autocomplete="off" style="margin-bottom:8px"><input id="b2" type="text" maxlength="14" placeholder="'+esc(t('bdName2'))+'" value="'+esc(b.b||'')+'" autocomplete="off" style="margin-bottom:8px"><input id="b3" type="text" inputmode="numeric" maxlength="2" placeholder="'+esc(t('bdAge'))+'" value="'+esc(b.age||'')+'" autocomplete="off"><label style="display:flex;gap:10px;align-items:center;margin:12px 0;font-weight:700"><input type="checkbox" id="b4" '+(b.banner?'checked':'')+' style="width:22px;height:22px"> '+esc(t('bdBannerOpt'))+'</label><button class="btn" data-act="bdSave">'+esc(t('bdSave'))+'</button>'+(b.a?'<button class="btn alt" data-act="bdOff">'+esc(t('bdOff'))+'</button>':'')+'<button class="btn alt" data-act="close">'+esc(t('cancel'))+'</button>')},
+ bdSave:function(){var a=(($('#b1')||{}).value||'').trim().slice(0,14),b=(($('#b2')||{}).value||'').trim().slice(0,14),g=parseInt(($('#b3')||{}).value,10),bn2=!!($('#b4')||{}).checked;unfocus();if(!a){toast(t('needName'));return}D.bdays[curKey()]={a:a,b:b,age:g>0&&g<100?g:'',banner:bn2};delete D.seen[curKey()];save();closeModal();render();toast('🎂 '+bdNames())},
+ bdOff:function(){delete D.bdays[curKey()];delete D.seen[curKey()];save();closeModal();S.group='all';render()},
+ pack:function(d){var p=me();if(p){p.pack=d.k}D.pack=d.k;S.group='all';save();render()},
  changePic:function(){S.target='mine';var f=$('#fLib');f.value='';f.click()},
- reset:function(){if(S.reset){D={pack:D.pack,me:'',profiles:{},imported:{},meta:{}};PH={};save();savePh();S.reset=false;S.skip=false;S.tab='missions';render()}else{S.reset=true;render()}},
+ ask:function(d){S.ask=d.k;openModal('<h2>⚠️ '+esc(t(d.k==='all'?'eraseAll':'clearBoard'))+'</h2><p>'+esc(t(d.k==='all'?'eraseMsg':'clearBoardMsg'))+'</p><button class="btn red" data-act="doAsk">'+esc(t('yesDo'))+'</button><button class="btn alt" data-act="close">'+esc(t('cancel'))+'</button>')},
+ doAsk:function(){var k=S.ask;S.ask='';if(k==='all'){D={pack:D.pack,me:'',profiles:{},imported:{},meta:{},bdays:D.bdays,seen:{}};PH={};save();savePh();S.skip=false;S.prevMe='';S.tab='missions'}else{D.imported={};D.meta={};save()}closeModal();render();toast(t('cleared'))},
  mission:function(d){
   var m=findMission(d.id);if(!m||!me())return;
   if(m.type==='photo'){S.pending=m;var f=$('#fCam');f.value='';f.click();return}
@@ -2667,7 +2747,7 @@ var A={
   if(i===r.m.a){
    var pts=r.pts(),m=r.m;var b=document.querySelectorAll('.opt')[i];if(b)b.classList.add('good');
    p.done[m.id]={pts:pts,type:'riddle',ts:Date.now()};save();
-   setTimeout(function(){closeModal();toast(t('correct',{n:pts}));render()},650);
+   setTimeout(function(){closeModal();toast(t('correct',{n:pts}));if(m.g==='bd')confetti();render()},650);
   }else{if(r.bad.indexOf(i)<0)r.bad.push(i);openModal(riddleHtml())}
  },
  close:function(){closeModal();render()},
@@ -2711,10 +2791,23 @@ $('#fCam').addEventListener('change',function(){
  var f=this.files&&this.files[0],m=S.pending,p=me();if(!f||!m||!p)return;S.pending=null;toast(t('sending'));
  shrink(f,420,0.6,false).then(function(img){
   p.done[m.id]={pts:m.pts,type:'photo',ts:Date.now()};PH[D.me+'_'+m.id]=img;
-  var ok=save();if(!savePh()){delete PH[D.me+'_'+m.id];toast(t('storageFull'))}else if(ok)toast(t('photoOk',{n:m.pts}));
+  var ok=save();if(!savePh()){delete PH[D.me+'_'+m.id];toast(t('storageFull'))}else if(ok){toast(t('photoOk',{n:m.pts}));if(m.g==='bd')confetti()}
   render();
  }).catch(function(){toast(t('photoFail'))});
 });
+
+/* ---------- birthday card ---------- */
+function confetti(host){
+ var c=document.createElement('div');c.className='conf';var E=['🎉','🎈','⭐','🎂','✨','💜','🎊','🗽'];
+ for(var i=0;i<60;i++){var sp=document.createElement('span');sp.textContent=E[i%E.length];sp.style.left=Math.random()*100+'%';sp.style.fontSize=(18+Math.random()*22)+'px';sp.style.animationDuration=(2.5+Math.random()*2.5)+'s';sp.style.animationDelay=(Math.random()*1.2)+'s';c.appendChild(sp)}
+ document.body.appendChild(c);setTimeout(function(){if(c.parentNode)c.parentNode.removeChild(c)},6500);
+}
+function showCard(){
+ if(!bdActive())return;
+ var el=$('#card');
+ el.innerHTML='<div class="cardin"><div class="cake">🎂</div><h1>'+esc(bdTitle())+'</h1><p>'+esc(t('bdCardSub'))+'</p><p>'+esc(t('bdFrom'))+' 💜</p><button class="btn" data-act="cardClose" style="background:#fff;color:#6c4cf1">'+esc(t('bdStart'))+'</button></div>';
+ el.className='show';confetti();
+}
 
 /* ---------- importing a scanned score ---------- */
 function importHash(){
